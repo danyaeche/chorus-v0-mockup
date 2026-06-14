@@ -57,6 +57,23 @@
   .pbar .fill { height: 100%; background: var(--green); border-radius: 999px; }
   .pbar-row .pct { width: 44px; text-align: right; font-size: 14px; font-weight: 600; font-family: var(--font-head); }
   .pbar-row .op { width: 78px; text-align: right; font-size: 12px; color: var(--muted); }
+  /* cross-project DFM table */
+  .pj-table .pjh, .pj-table .pj-row, .pj-total { display: grid; grid-template-columns: 1.7fr 52px 50px 78px 1fr 46px; gap: 14px; align-items: center; padding: 12px 18px; }
+  .pj-table .pjh { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted-2); padding-top: 11px; padding-bottom: 9px; border-bottom: 1px solid var(--line-2); }
+  .pj-table .pjh .r { text-align: right; }
+  .pj-table .pj-row { border-bottom: 1px solid var(--line-2); cursor: pointer; }
+  .pj-table .pj-row:hover { background: #fafafa; }
+  .pjn { font-size: 13px; font-weight: 500; }
+  .pjn .ps { display: block; font-size: 11.5px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .pj-table .num { text-align: right; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .pj-table .num.open { color: var(--amber-600); font-weight: 600; }
+  .pj-table .num.appr { color: var(--green-600t); font-weight: 600; }
+  .pjbar { height: 8px; background: #eef1f0; border-radius: 999px; overflow: hidden; }
+  .pjbar .f { height: 100%; background: var(--green); border-radius: 999px; }
+  .pct2 { text-align: right; font-size: 14px; font-weight: 600; font-family: var(--font-head); }
+  .pj-total { border-top: 1px solid var(--line); background: #fbfcfc; }
+  .pj-total .tlbl { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .pj-total .num { text-align: right; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
@@ -64,7 +81,7 @@
   <aside class="sidebar" data-active="overview"></aside>
   <main class="main">
     <div class="page-head">
-      <div><h1>Dashboard</h1><div class="subtitle" id="dashSub" style="margin:4px 0 0">SimplyOps workspace · DFM issues across all projects</div></div>
+      <div><h1>Dashboard</h1><div class="subtitle" id="dashSub" style="margin:4px 0 0">SimplyOps workspace · 5 active programs · 49 parts in DFM across all projects</div></div>
       <div class="page-actions">
         <button class="btn btn--sm">Last 30 days ▾</button>
         <a class="btn btn--sm" href="create-project.html">+ New project</a>
@@ -73,11 +90,11 @@
     </div>
 
     <div class="stat-grid metrics5">
-      <div class="stat"><div class="k">Open issues</div><div class="v amber">34</div><div class="d">need a decision or fix</div></div>
-      <div class="stat"><div class="k">Awaiting validation</div><div class="v">6</div><div class="d">fix uploaded · supplier to confirm</div></div>
-      <div class="stat"><div class="k">Accepted</div><div class="v">8</div><div class="d">to implement next rev</div></div>
-      <div class="stat"><div class="k">Closed</div><div class="v">112</div><div class="d">resolved this program</div></div>
-      <div class="stat"><div class="k">DFM completion</div><div class="v accent">84%</div><div class="d"><span class="trend up">▲ 9%</span> vs last month</div></div>
+      <div class="stat"><div class="k">Open issues</div><div class="v amber">61</div><div class="d">across all projects</div></div>
+      <div class="stat"><div class="k">Awaiting validation</div><div class="v">12</div><div class="d">reviewer to confirm the fix</div></div>
+      <div class="stat"><div class="k">Dispositioned</div><div class="v">15</div><div class="d">accepted · to implement</div></div>
+      <div class="stat"><div class="k">Sign-offs pending</div><div class="v">7</div><div class="d">joint alignments to sign</div></div>
+      <div class="stat"><div class="k">DFM Approved</div><div class="v accent">28</div><div class="d">of 49 parts · cleared to cut steel</div></div>
     </div>
 
     <div class="row2a">
@@ -93,17 +110,17 @@
           <div class="bargroup"><div class="bg-bars"><div class="bar opened" style="height:51px"></div><div class="bar resolved" style="height:85px"></div></div><div class="wk">W7</div></div>
           <div class="bargroup"><div class="bg-bars"><div class="bar opened" style="height:68px"></div><div class="bar resolved" style="height:119px"></div></div><div class="wk">W8</div></div>
         </div>
-        <div style="padding:4px 20px 14px;font-size:12px;color:var(--muted)">Closing is outpacing creation over the last 3 weeks — the issue backlog is shrinking.</div>
+        <div style="padding:4px 20px 14px;font-size:12px;color:var(--muted)">Across all 5 programs, closing is outpacing creation over the last 3 weeks — the workspace backlog is shrinking.</div>
       </div>
 
       <div class="panel flexcol">
-        <div class="panel-head"><h2>DFM completion</h2><span class="muted fs-12">160 issues</span></div>
+        <div class="panel-head"><h2>DFM status · all parts</h2><span class="muted fs-12">49 parts · 5 projects</span></div>
         <div class="donut-wrap">
-          <div class="donut"><div class="hole"><div><div class="big">84%</div><div class="lbl">resolved</div></div></div></div>
+          <div class="donut" style="background:conic-gradient(var(--green) 0 57%, var(--blue-600) 57% 94%, var(--red-600) 94% 100%)"><div class="hole"><div><div class="big">57%</div><div class="lbl">approved</div></div></div></div>
           <div class="dlegend">
-            <div class="dleg"><span class="sw" style="background:var(--green)"></span>Closed <b>112</b></div>
-            <div class="dleg"><span class="sw" style="background:var(--blue-600)"></span>In progress <b>14</b></div>
-            <div class="dleg"><span class="sw" style="background:var(--red-600)"></span>Open <b>34</b></div>
+            <div class="dleg"><span class="sw" style="background:var(--green)"></span>DFM Approved <b>28</b></div>
+            <div class="dleg"><span class="sw" style="background:var(--blue-600)"></span>In review <b>18</b></div>
+            <div class="dleg"><span class="sw" style="background:var(--red-600)"></span>Blocked · show-stopper <b>3</b></div>
           </div>
         </div>
       </div>
@@ -115,28 +132,28 @@
         <div class="panel-head"><h2>Needs attention</h2><a href="issues-list.html">All issues →</a></div>
         <div class="hrow" onclick="location.href='issue-detail.html'">
           <span class="sig red"></span>
-          <div class="grow"><div class="t"><span class="no">#11</span>Tolerance stack-up vs shrink</div><div class="m">Controller housing · Critical · needs your decision</div></div>
+          <div class="grow"><div class="t"><span class="no">#11</span>Tolerance stack-up vs shrink won't hold</div><div class="m">TM-4 Bike Program · Controller housing · Show-stopper · needs your decision</div></div>
           <span class="age">1d</span>
-        </div>
-        <div class="hrow" onclick="location.href='issue-detail.html'">
-          <span class="sig amber"></span>
-          <div class="grow"><div class="t"><span class="no">#12</span>Insufficient draft for ejection</div><div class="m">Battery enclosure — lower · awaiting your validation</div></div>
-          <span class="age">5h</span>
-        </div>
-        <div class="hrow" onclick="location.href='issue-detail.html'">
-          <span class="sig green"></span>
-          <div class="grow"><div class="t"><span class="no">#8</span>Snap-fit hook too stiff</div><div class="m">Charge-port cap · validated — ready to close</div></div>
-          <span class="age">3d</span>
         </div>
         <div class="hrow" onclick="location.href='issue-detail.html'">
           <span class="sig red"></span>
-          <div class="grow"><div class="t"><span class="no">#10</span>Undercut requires a lifter</div><div class="m">Display bezel · accepted · needs implementation</div></div>
-          <span class="age">1d</span>
+          <div class="grow"><div class="t"><span class="no">#31</span>No tool access for the mainframe weld</div><div class="m">Cargo eBike · Mainframe · Show-stopper · awaiting your decision</div></div>
+          <span class="age">2d</span>
         </div>
         <div class="hrow" onclick="location.href='issue-detail.html'">
           <span class="sig amber"></span>
-          <div class="grow"><div class="t"><span class="no">#14</span>Ejector pins mark Class A face</div><div class="m">Battery enclosure — lower · Open · 2h in queue</div></div>
-          <span class="age">2h</span>
+          <div class="grow"><div class="t"><span class="no">#12</span>Insufficient draft for ejection</div><div class="m">TM-4 Bike Program · Battery enclosure — lower · awaiting your validation</div></div>
+          <span class="age">5h</span>
+        </div>
+        <div class="hrow" onclick="location.href='issue-detail.html'">
+          <span class="sig amber"></span>
+          <div class="grow"><div class="t"><span class="no">#44</span>Sink mark on the deck boss</div><div class="m">Helios Scooter · Deck pan · Finding · awaiting your decision</div></div>
+          <span class="age">6h</span>
+        </div>
+        <div class="hrow" onclick="location.href='issue-detail.html'">
+          <span class="sig red"></span>
+          <div class="grow"><div class="t"><span class="no">#10</span>Undercut requires a lifter</div><div class="m">TM-4 Bike Program · Display bezel · dispositioned · needs implementation</div></div>
+          <span class="age">1d</span>
         </div>
       </div>
 
@@ -146,54 +163,75 @@
         <div class="timeline">
           <div class="tl-item">
             <span class="tl-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.6"/></svg></span>
-            <div class="tl-body"><div class="tl-t"><b>Benjamin Chen</b> opened issue <b>#14</b> — Ejector pins mark Class A face</div><div class="tl-m">Battery enclosure — lower · Medium · Process</div></div>
+            <div class="tl-body"><div class="tl-t"><b>Benjamin Chen</b> opened <b>#14</b> — Ejector pins mark Class A face</div><div class="tl-m">TM-4 Bike Program · Battery enclosure — lower · Finding</div></div>
             <span class="tl-time">2h</span>
           </div>
           <div class="tl-item">
+            <span class="tl-ic green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6.5v5c0 4.5 3.2 7.8 8 9.5 4.8-1.7 8-5 8-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tl-body"><div class="tl-t"><b>Cargo eBike · Mainframe</b> reached <b>DFM Approved</b> — cleared to cut steel</div><div class="tl-m">all issues dispositioned · 4 sign-offs signed · Rev B frozen</div></div>
+            <span class="tl-time">4h</span>
+          </div>
+          <div class="tl-item">
             <span class="tl-ic green"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <div class="tl-body"><div class="tl-t"><b>Mathieu Kury</b> accepted <b>#12</b> — Insufficient draft for ejection</div><div class="tl-m">Battery enclosure — lower · will fix in next revision</div></div>
+            <div class="tl-body"><div class="tl-t"><b>Mathieu Kury</b> dispositioned <b>#12</b> — accepted</div><div class="tl-m">TM-4 Bike Program · Battery enclosure — lower · will fix next revision</div></div>
             <span class="tl-time">5h</span>
           </div>
           <div class="tl-item">
-            <span class="tl-ic blue"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 20h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <div class="tl-body"><div class="tl-t"><b>Mathieu Kury</b> uploaded Rev C — candidate fix for <b>#12</b></div><div class="tl-m">Battery enclosure — lower · validation requested</div></div>
-            <span class="tl-time">May 16</span>
-          </div>
-          <div class="tl-item">
-            <span class="tl-ic green"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <div class="tl-body"><div class="tl-t"><b>Benjamin Chen</b> validated <b>#8</b> → closed</div><div class="tl-m">Charge-port cap · snap-fit confirmed on Rev B</div></div>
-            <span class="tl-time">May 15</span>
+            <span class="tl-ic blue"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M5 12l4-4M5 12l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tl-body"><div class="tl-t"><b>Helios Scooter</b> · Sora signed the <b>material lock</b> sign-off</div><div class="tl-m">Shenzhen Optics · Deck pan · PC-ABS grade frozen</div></div>
+            <span class="tl-time">1d</span>
           </div>
           <div class="tl-item">
             <span class="tl-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.6"/></svg></span>
-            <div class="tl-body"><div class="tl-t"><b>Taichung MetalWorks</b> created issue <b>#21</b> — Rib draft</div><div class="tl-m">Cargo eBike · Mainframe</div></div>
+            <div class="tl-body"><div class="tl-t"><b>Taichung MetalWorks</b> opened <b>#21</b> — Rib draft below 1°</div><div class="tl-m">Cargo eBike · Mainframe · Show-stopper</div></div>
             <span class="tl-time">May 14</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- By project: DFM completion -->
+    <!-- Cross-project DFM rollup -->
     <div class="panel">
-      <div class="panel-head"><h2>By project · DFM completion</h2><a href="projects.html">All projects →</a></div>
-      <div class="pbar-row" onclick="location.href='project-detail.html?p=TM-4%20Bike%20Program'" style="cursor:pointer">
-        <div class="pn">TM-4 Bike Program<br/><span class="ps">Hsinchu Precision · 18 parts · Rev D</span></div>
-        <div class="pbar"><div class="fill" style="width:84%"></div></div>
-        <div class="pct">84%</div>
-        <div class="op">34 open</div>
-      </div>
-      <div class="pbar-row" onclick="location.href='project-detail.html?p=Cargo%20eBike'" style="cursor:pointer">
-        <div class="pn">Cargo eBike<br/><span class="ps">Taichung MetalWorks · 9 parts · Rev B</span></div>
-        <div class="pbar"><div class="fill" style="width:96%"></div></div>
-        <div class="pct">96%</div>
-        <div class="op">2 open</div>
+      <div class="panel-head"><h2>DFM by project · across the workspace</h2><a href="projects.html">All projects →</a></div>
+      <div class="pj-table">
+        <div class="pjh"><div>Project · lead provider</div><div class="r">Parts</div><div class="r">Open</div><div class="r">Approved</div><div>DFM progress</div><div class="r">%</div></div>
+        <div class="pj-row" onclick="location.href='project-detail.html?p=TM-4%20Bike%20Program'">
+          <div class="pjn">TM-4 Bike Program<span class="ps">Hsinchu Precision · Rev D</span></div>
+          <div class="num">18</div><div class="num open">34</div><div class="num appr">11 / 18</div>
+          <div class="pjbar"><div class="f" style="width:61%"></div></div><div class="pct2">61%</div>
+        </div>
+        <div class="pj-row" onclick="location.href='project-detail.html?p=Cargo%20eBike'">
+          <div class="pjn">Cargo eBike<span class="ps">Taichung MetalWorks · Rev B</span></div>
+          <div class="num">9</div><div class="num open">2</div><div class="num appr">8 / 9</div>
+          <div class="pjbar"><div class="f" style="width:89%"></div></div><div class="pct2">89%</div>
+        </div>
+        <div class="pj-row" onclick="location.href='projects.html'">
+          <div class="pjn">Helios Scooter<span class="ps">Shenzhen Optics · Rev C</span></div>
+          <div class="num">12</div><div class="num open">16</div><div class="num appr">4 / 12</div>
+          <div class="pjbar"><div class="f" style="width:33%"></div></div><div class="pct2">33%</div>
+        </div>
+        <div class="pj-row" onclick="location.href='projects.html'">
+          <div class="pjn">Atlas Drone<span class="ps">Penang Precision · Rev A</span></div>
+          <div class="num">6</div><div class="num open">7</div><div class="num appr">2 / 6</div>
+          <div class="pjbar"><div class="f" style="width:33%"></div></div><div class="pct2">33%</div>
+        </div>
+        <div class="pj-row" onclick="location.href='projects.html'">
+          <div class="pjn">Pace Wearable<span class="ps">Dongguan Tooling · Rev B</span></div>
+          <div class="num">4</div><div class="num open">2</div><div class="num appr">3 / 4</div>
+          <div class="pjbar"><div class="f" style="width:75%"></div></div><div class="pct2">75%</div>
+        </div>
+        <div class="pj-total">
+          <div class="tlbl">Workspace · 5 projects</div>
+          <div class="num">49</div><div class="num">61</div><div class="num">28 / 49</div>
+          <div class="pjbar"><div class="f" style="width:57%"></div></div><div class="pct2">57%</div>
+        </div>
       </div>
     </div>
   </main>
 </div>
 <script src="store.js"></script>
 <script>
-  (function(){ try { var ws = window.ChorusStore && ChorusStore.currentWorkspace(); var s = document.getElementById('dashSub'); if (ws && s) s.textContent = ws.name + ' workspace · DFM issues across all projects'; } catch(e){} })();
+  (function(){ try { var ws = window.ChorusStore && ChorusStore.currentWorkspace(); var s = document.getElementById('dashSub'); if (ws && s) s.textContent = ws.name + ' workspace · 5 active programs · 49 parts in DFM across all projects'; } catch(e){} })();
 </script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>

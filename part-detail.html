@@ -41,6 +41,10 @@
   .tn-sub .nq { color: var(--muted-2); }
   .tree-foot { padding: 11px 16px; border-top: 1px solid var(--line-2); }
   .tree-foot a { color: var(--green); font-size: 12.5px; font-weight: 500; }
+  .tnode { display: flex; align-items: center; gap: 10px; }
+  .tn-main { flex: 1; min-width: 0; }
+  .rev-mini { width: 64px; height: 47px; flex: none; border-radius: 8px; background: radial-gradient(120% 120% at 50% 20%, #fbfcfc 0%, #eef1f1 60%, #e3e7e7 100%); border: 1px solid var(--line-2); cursor: grab; }
+  .rev-mini:active { cursor: grabbing; }
 
   .rev-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--ink); background: #eef1f0; border-radius: 999px; padding: 3px 10px; }
   .rev-chip .cv { width: 6px; height: 6px; border-right: 1.5px solid var(--ink-2); border-bottom: 1.5px solid var(--ink-2); transform: translateY(-1px) rotate(45deg); }
@@ -55,6 +59,11 @@
   .viewer .tools button { width: 30px; height: 30px; border: 0; background: transparent; border-radius: 6px; display: grid; place-items: center; }
   .viewer .tools button:hover { background: #f1f3f3; }
   .files { display: flex; gap: 8px; padding: 11px 16px; flex-wrap: wrap; }
+  .cad-toggle { display: inline-flex; gap: 2px; background: #eef1f0; border-radius: 8px; padding: 3px; }
+  .cad-toggle button { border: 0; background: transparent; font-size: 12px; font-weight: 600; color: var(--muted); padding: 4px 13px; border-radius: 6px; cursor: pointer; }
+  .cad-toggle button.on { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .cad2d { aspect-ratio: 4 / 3; background: #fff; border-top: 1px solid var(--line-2); position: relative; }
+  .cad2d svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .file-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); background: #f1f3f3; border-radius: 6px; padding: 4px 9px; }
 
   .disc-head .ctx { font-size: 11.5px; color: var(--muted); }
@@ -171,6 +180,32 @@
   .dr-open { color: var(--amber-600); font-weight: 600; font-size: 12.5px; white-space: nowrap; }
   .dr-open.zero { color: var(--muted); }
   .dfm-rev-foot { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--line-2); }
+  .dr-rev { font-size: 11px; font-weight: 600; color: var(--ink-2); background: #eef1f0; border-radius: 999px; padding: 2px 9px; }
+  /* package gate */
+  .pkg-gate { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 11px 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .pg-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 5px 11px; border-radius: 999px; flex: none; }
+  .pg-badge.ok { background: var(--green-50); color: var(--green-600t); }
+  .pg-txt { font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+  .pg-txt b { color: var(--ink); }
+  .pkg-gate .pg-link { margin-left: auto; color: var(--green); font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  /* sign-offs (joint alignments) */
+  .so-row { display: flex; align-items: center; gap: 13px; padding: 13px 16px; border-bottom: 1px solid var(--line-2); }
+  .so-row:last-of-type { border-bottom: 0; }
+  .so-ic { width: 30px; height: 30px; border-radius: 8px; background: #eef1f0; display: grid; place-items: center; flex: none; font-size: 15px; }
+  .so-main { flex: 1; min-width: 0; }
+  .so-t { font-size: 13.5px; font-weight: 600; }
+  .so-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .so-st { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; flex: none; }
+  .so-st.signed { background: var(--green-50); color: var(--green-600t); }
+  .so-st.aligned { background: var(--blue-50); color: var(--blue-600); }
+  .so-st.proposed { background: #f5ecd4; color: var(--amber-600); }
+  /* DFM approval gate (terminal) */
+  .appr { display: flex; align-items: center; gap: 16px; background: linear-gradient(180deg,#fff,#fbfdfc); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .appr-ic { width: 44px; height: 44px; border-radius: 11px; background: #eef1f0; display: grid; place-items: center; flex: none; }
+  .appr-main { flex: 1; }
+  .appr-t { font-size: 15px; font-weight: 600; font-family: var(--font-head); display: flex; align-items: center; gap: 9px; }
+  .appr-sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+  .appr-lock { font-size: 11.5px; font-weight: 600; color: var(--amber-600); background: #f5ecd4; padding: 4px 11px; border-radius: 999px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -194,13 +229,20 @@
       </div>
     </div>
 
-    <!-- Part State -->
+    <!-- Part State (v2) -->
     <div class="pstate">
       <span class="ps done">Draft</span><span class="psar">→</span>
-      <span class="ps done">Under review</span><span class="psar">→</span>
+      <span class="ps done">Package Complete</span><span class="psar">→</span>
       <span class="ps now">DFM Active</span><span class="psar">→</span>
-      <span class="ps todo">Awaiting validation</span><span class="psar">→</span>
-      <span class="ps todo">DFM Complete</span>
+      <span class="ps todo">Awaiting Validation</span><span class="psar">→</span>
+      <span class="ps todo">DFM Approved</span>
+    </div>
+
+    <!-- Package gate -->
+    <div class="pkg-gate">
+      <span class="pg-badge ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Package Complete</span>
+      <span class="pg-txt">The injection-mold package met its required-items checklist — <b>that's what unlocked reviewer invites</b>. You can't invite a DFM provider until the package is complete.</span>
+      <a class="pg-link" href="#package">View package →</a>
     </div>
 
     <!-- Part metadata + DFM-complete logic -->
@@ -224,16 +266,16 @@
       </div>
 
       <div class="panel">
-        <div class="panel-head"><div class="ck-head"><h3>Part completion</h3></div><span class="ck-prog">3 of 6 checks</span></div>
+        <div class="panel-head"><div class="ck-head"><h3>DFM Approval readiness</h3></div><span class="ck-prog">3 of 6</span></div>
         <div class="ck">
-          <div class="ckrow"><span class="ci bad">2</span>2 issues open (#14, #13) — need decision or fix</div>
-          <div class="ckrow done"><span class="ci">✓</span>No critical issues open</div>
-          <div class="ckrow done"><span class="ci">✓</span>No accepted issues awaiting implementation</div>
+          <div class="ckrow"><span class="ci bad">2</span>2 issues still open (#14, #13) — need disposition or fix</div>
+          <div class="ckrow done"><span class="ci">✓</span>No show-stoppers open</div>
           <div class="ckrow"><span class="ci bad">1</span>1 issue awaiting validation (#12)</div>
-          <div class="ckrow done"><span class="ci">✓</span>Latest revision (Rev C) reviewed</div>
-          <div class="ckrow todo"><span class="ci">○</span>Reviewer confirms moldable</div>
+          <div class="ckrow done"><span class="ci">✓</span>Latest revision (Rev C) reviewed by both providers</div>
+          <div class="ckrow bad"><span class="ci bad">1</span>1 sign-off still Proposed — gate location</div>
+          <div class="ckrow todo"><span class="ci">○</span>Freeze approved revision → cut steel</div>
         </div>
-        <div class="ck-foot">Clear the 3 remaining → <b>DFM Complete</b> · part ready for production</div>
+        <div class="ck-foot">Entry to <b>DFM Approved</b>: every issue dispositioned + all sign-offs signed + revision frozen.</div>
       </div>
     </div>
 
@@ -243,17 +285,17 @@
         <div class="panel-head"><h3>Revisions</h3><a href="revision-history.html" style="color:var(--green);font-weight:500;font-size:12px">History →</a></div>
         <div class="tree">
           <div class="troot"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" stroke="#1c1c1c" stroke-width="1.5"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="#1c1c1c" stroke-width="1.5"/></svg> Battery enclosure — lower</div>
-          <a class="tnode sel" href="part-detail.html">
-            <div class="tn-head">Rev C <span class="badge badge--green" style="height:18px;font-size:11px">Current</span></div>
-            <div class="tn-sub">2 open · 1 awaiting validation</div>
+          <a class="tnode sel" href="#package" onclick="selectRev(event,'C')">
+            <div class="tn-main"><div class="tn-head">Rev C <span class="badge badge--green" style="height:18px;font-size:11px">Current</span></div><div class="tn-sub">2 open · 1 awaiting validation</div></div>
+            <canvas class="cad-cell rev-mini" data-cad-shape="enclosure" title="Rev C package"></canvas>
           </a>
-          <a class="tnode" href="part-detail.html">
-            <div class="tn-head">Rev B</div>
-            <div class="tn-sub">2 issues validated</div>
+          <a class="tnode" href="#package" onclick="selectRev(event,'B')">
+            <div class="tn-main"><div class="tn-head">Rev B</div><div class="tn-sub">2 issues validated</div></div>
+            <canvas class="cad-cell rev-mini" data-cad-shape="enclosure" title="Rev B package"></canvas>
           </a>
-          <a class="tnode" href="part-detail.html">
-            <div class="tn-head">Rev A</div>
-            <div class="tn-sub"><span class="nq">introduced · first review</span></div>
+          <a class="tnode" href="#package" onclick="selectRev(event,'A')">
+            <div class="tn-main"><div class="tn-head">Rev A</div><div class="tn-sub"><span class="nq">introduced · first review</span></div></div>
+            <canvas class="cad-cell rev-mini" data-cad-shape="enclosure" title="Rev A package"></canvas>
           </a>
         </div>
         <div class="tree-foot"><a href="part-detail.html">+ Upload Rev D</a></div>
@@ -262,8 +304,8 @@
       <!-- Files / CAD preview for the selected revision -->
       <div class="panel">
         <div class="panel-head">
-          <div style="display:flex;align-items:center;gap:10px"><h3>Package — Rev C</h3><span class="rev-chip">Rev C <span class="cv"></span></span></div>
-          <span class="muted fs-12">CAD · drawing · specs</span>
+          <div style="display:flex;align-items:center;gap:10px"><h3 id="pkgTitle">Package — Rev C</h3><span class="rev-chip" id="pkgRevChip">Rev C <span class="cv"></span></span></div>
+          <div class="cad-toggle"><button id="m3d" class="on" onclick="setCadMode('3d')">3D</button><button id="m2d" onclick="setCadMode('2d')">2D</button></div>
         </div>
         <div class="viewer">
           <div id="cadHost" class="cad-host"></div>
@@ -281,6 +323,67 @@
             <button id="cadReset" title="Reset view"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#3f4a47" stroke-width="1.6" stroke-linecap="round"/></svg></button>
             <button id="cadGrid" title="Toggle grid"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#3f4a47" stroke-width="1.6"/><path d="M4 10h16M4 15h16M10 4v16M15 4v16" stroke="#3f4a47" stroke-width="1.2"/></svg></button>
           </div>
+        </div>
+        <div class="cad2d" id="cad2d" style="display:none">
+          <svg viewBox="0 0 820 600" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+            <defs>
+              <marker id="ah" markerWidth="11" markerHeight="9" refX="8.5" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0 0 L9 4 L0 8 Z" fill="#8a979d"/></marker>
+              <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#cdd5d8" stroke-width="1.2"/></pattern>
+            </defs>
+            <rect x="14" y="14" width="792" height="572" fill="none" stroke="#d2dadd"/>
+            <!-- TOP VIEW -->
+            <text x="70" y="72" font-size="13" font-weight="600" fill="#2f4048" font-family="'Space Grotesk',sans-serif" letter-spacing="0.04em">TOP VIEW</text>
+            <rect x="70" y="92" width="260" height="168" rx="14" fill="#fbfdfe" stroke="#2f4048" stroke-width="1.8"/>
+            <rect x="82" y="104" width="236" height="144" rx="9" fill="none" stroke="#b6c0c4"/>
+            <g fill="#eef2f3" stroke="#2f4048" stroke-width="1.4"><circle cx="108" cy="128" r="10"/><circle cx="292" cy="128" r="10"/><circle cx="108" cy="224" r="10"/><circle cx="292" cy="224" r="10"/></g>
+            <line x1="55" y1="176" x2="345" y2="176" stroke="#c4ccd0" stroke-dasharray="7 4"/>
+            <line x1="200" y1="80" x2="200" y2="272" stroke="#c4ccd0" stroke-dasharray="7 4"/>
+            <line x1="70" y1="88" x2="70" y2="58" stroke="#c4ccd0"/><line x1="330" y1="88" x2="330" y2="58" stroke="#c4ccd0"/>
+            <line x1="70" y1="64" x2="330" y2="64" stroke="#8a979d" marker-start="url(#ah)" marker-end="url(#ah)"/>
+            <rect x="178" y="54" width="44" height="16" fill="#fff"/><text x="200" y="66" font-size="12" fill="#2f4048" text-anchor="middle">180.0</text>
+            <line x1="66" y1="92" x2="44" y2="92" stroke="#c4ccd0"/><line x1="66" y1="260" x2="44" y2="260" stroke="#c4ccd0"/>
+            <line x1="50" y1="92" x2="50" y2="260" stroke="#8a979d" marker-start="url(#ah)" marker-end="url(#ah)"/>
+            <text x="40" y="176" font-size="12" fill="#2f4048" text-anchor="middle" transform="rotate(-90 40 176)">120.0</text>
+            <!-- SECTION A-A -->
+            <text x="70" y="318" font-size="13" font-weight="600" fill="#2f4048" font-family="'Space Grotesk',sans-serif" letter-spacing="0.04em">SECTION A–A</text>
+            <line x1="70" y1="478" x2="330" y2="478" stroke="#2f4048" stroke-width="1.6"/>
+            <line x1="135" y1="478" x2="135" y2="338" stroke="#c4ccd0" stroke-dasharray="6 4"/>
+            <g id="d2dWall" transform="rotate(9 135 478)"><polygon points="125,478 150,478 143,340 132,340" fill="url(#hatch)" stroke="#2f4048" stroke-width="1.6"/></g>
+            <path d="M135 446 A32 32 0 0 1 152 454" fill="none" stroke="#009571" stroke-width="1.4"/>
+            <text id="d2dDraft" x="183" y="452" font-size="14" font-weight="700" fill="#009571">1.5°</text>
+            <text x="150" y="470" font-size="10.5" fill="#8a979d">DRAFT ∠</text>
+            <line x1="132" y1="334" x2="143" y2="334" stroke="#8a979d" marker-start="url(#ah)" marker-end="url(#ah)"/>
+            <text x="200" y="338" font-size="11.5" fill="#2f4048">t = 2.50</text>
+            <!-- REV TABLE -->
+            <text x="500" y="72" font-size="12.5" font-weight="600" fill="#2f4048" font-family="'Space Grotesk',sans-serif" letter-spacing="0.03em">DRAFT ANGLE — BY REVISION</text>
+            <g font-size="12.5" fill="#2f4048">
+              <rect id="d2dRowA" x="500" y="84" width="290" height="30" fill="#fff"/>
+              <rect id="d2dRowB" x="500" y="114" width="290" height="30" fill="#fff"/>
+              <rect id="d2dRowC" x="500" y="144" width="290" height="30" fill="rgba(0,149,113,.10)"/>
+              <line x1="500" y1="84" x2="790" y2="84" stroke="#e0e6e8"/><line x1="500" y1="114" x2="790" y2="114" stroke="#e0e6e8"/><line x1="500" y1="144" x2="790" y2="144" stroke="#e0e6e8"/><line x1="500" y1="174" x2="790" y2="174" stroke="#e0e6e8"/>
+              <text x="516" y="104">REV A</text><text x="610" y="104">0.5°</text><text x="690" y="104" fill="#8a979d">superseded</text>
+              <text x="516" y="134">REV B</text><text x="610" y="134">1.0°</text><text x="690" y="134" fill="#8a979d">superseded</text>
+              <text x="516" y="164" font-weight="700">REV C</text><text x="610" y="164" font-weight="700">1.5°</text><text x="690" y="164" fill="#009571" font-weight="600">current</text>
+            </g>
+            <text x="500" y="200" font-size="10.5" fill="#8a979d">Issue #12 — reviewer flagged 0.5° on Rev A; opened to 1.5° in Rev C.</text>
+            <!-- NOTES -->
+            <text x="500" y="240" font-size="12" font-weight="600" fill="#2f4048" font-family="'Space Grotesk',sans-serif">NOTES</text>
+            <g font-size="11" fill="#566169">
+              <text x="500" y="260">1. DRAFT PER REVISION TABLE — ALL TEXTURED WALLS</text>
+              <text x="500" y="278">2. NOMINAL WALL 2.50 ±0.10</text>
+              <text x="500" y="296">3. MATL PC-ABS CYCOLOY · TEXTURE MT-11010</text>
+              <text x="500" y="314">4. GATE OFF CLASS A FACE — SEE SIGN-OFF</text>
+            </g>
+            <!-- TITLE BLOCK -->
+            <rect x="500" y="430" width="290" height="140" fill="#fbfdfe" stroke="#2f4048"/>
+            <line x1="500" y1="470" x2="790" y2="470" stroke="#2f4048"/><line x1="500" y1="500" x2="790" y2="500" stroke="#b6c0c4"/><line x1="500" y1="530" x2="790" y2="530" stroke="#b6c0c4"/><line x1="645" y1="470" x2="645" y2="570" stroke="#b6c0c4"/>
+            <text x="514" y="455" font-size="15" font-weight="700" fill="#2f4048" font-family="'Space Grotesk',sans-serif">chorus</text>
+            <text x="700" y="455" font-size="11" fill="#8a979d" text-anchor="middle">DFM DRAWING</text>
+            <text x="514" y="490" font-size="12" fill="#2f4048">Battery enclosure — lower</text>
+            <text x="514" y="518" font-size="10" fill="#8a979d">PART NO</text><text x="514" y="535" font-size="12" fill="#2f4048">TM-4-2001</text>
+            <text x="660" y="518" font-size="10" fill="#8a979d">REV</text><text id="d2dRev" x="660" y="537" font-size="14" font-weight="700" fill="#009571">C</text>
+            <text x="514" y="555" font-size="10" fill="#8a979d">MATL PC-ABS</text><text x="660" y="555" font-size="10" fill="#8a979d">SCALE 1:2 · mm</text>
+          </svg>
         </div>
         <div class="files">
           <span class="file-chip">📐 enclosure-lower.step</span>
@@ -319,12 +422,12 @@
 
     <!-- DFM reviews — one per provider, in parallel -->
     <div class="panel" style="margin-bottom:16px">
-      <div class="panel-head"><h3>DFM reviews</h3><span class="muted fs-12">2 providers reviewing this part in parallel · each a scoped magic link</span></div>
+      <div class="panel-head"><h3>DFM reviews</h3><span class="muted fs-12">2 providers · in parallel · each NDA-gated, scoped, and at its own revision pointer</span></div>
       <div class="dfm-rev sel">
         <span class="cm-logo">HP</span>
         <div class="dr-main">
-          <div class="dr-nm">Hsinchu Precision <span class="badge badge--soft" style="height:18px;font-size:11px">CM</span> <span class="badge badge--blue" style="height:18px;font-size:11px">DFM Active</span></div>
-          <div class="dr-sub">benjamin.chen@hsinchu-precision.com · link active · scoped to this DFM · expires May 30</div>
+          <div class="dr-nm">Hsinchu Precision <span class="badge badge--soft" style="height:18px;font-size:11px">CM</span> <span class="badge badge--blue" style="height:18px;font-size:11px">DFM Active</span> <span class="dr-rev">reviewing Rev C</span></div>
+          <div class="dr-sub">benjamin.chen@hsinchu-precision.com · NDA on file · link active · scoped to this DFM · expires May 30</div>
         </div>
         <span class="dr-open">● 2 open</span>
         <a class="btn btn--sm" href="magic-link-view.html">Open reviewer view</a>
@@ -332,13 +435,50 @@
       <div class="dfm-rev">
         <span class="cm-logo" style="background:#2f73c4">SO</span>
         <div class="dr-main">
-          <div class="dr-nm">Shenzhen Optics <span class="badge badge--soft" style="height:18px;font-size:11px">Supplier</span> <span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">Awaiting validation</span></div>
-          <div class="dr-sub">sora@shenzhen-optics.com · link active · scoped to this DFM · expires Jun 4 · different tooling, different findings</div>
+          <div class="dr-nm">Shenzhen Optics <span class="badge badge--soft" style="height:18px;font-size:11px">Supplier</span> <span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">Awaiting validation</span> <span class="dr-rev">reviewing Rev B</span></div>
+          <div class="dr-sub">sora@shenzhen-optics.com · NDA on file · link active · scoped to this DFM · expires Jun 4 · one revision behind — different tooling, different findings</div>
         </div>
         <span class="dr-open">● 1 open</span>
         <a class="btn btn--sm" href="magic-link-view.html">Open reviewer view</a>
       </div>
       <div class="dfm-rev-foot"><button class="btn btn--sm" onclick="openInvite()">+ Invite another provider</button><span class="muted fs-12">a part can be DFM'd by several providers at once — each gets its own scoped DFM, the parties never see each other</span></div>
+    </div>
+
+    <!-- Sign-offs (joint alignments) -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-head"><h3>Sign-offs</h3><span class="muted fs-12">joint agreements between named parties — not issues one side "accepts"</span></div>
+      <div class="so-row">
+        <span class="so-ic">⎯</span>
+        <div class="so-main"><div class="so-t">Parting line</div><div class="so-sub">ALSO ⇄ Hsinchu Precision · agreed along the mid-flange split · Apr 22</div></div>
+        <span class="so-st signed">✓ Signed</span>
+      </div>
+      <div class="so-row">
+        <span class="so-ic">◎</span>
+        <div class="so-main"><div class="so-t">Material lock</div><div class="so-sub">ALSO ⇄ Hsinchu Precision · PC-ABS Cycoloy C1200HF · grade frozen · Apr 28</div></div>
+        <span class="so-st signed">✓ Signed</span>
+      </div>
+      <div class="so-row">
+        <span class="so-ic">⌖</span>
+        <div class="so-main"><div class="so-t">Gate location</div><div class="so-sub">ALSO proposed a sub-gate off the Class A face · awaiting Hsinchu counter-sign</div></div>
+        <span class="so-st proposed">◷ Proposed</span>
+      </div>
+      <div class="so-row">
+        <span class="so-ic">⛓</span>
+        <div class="so-main"><div class="so-t">Tooling plan</div><div class="so-sub">ALSO ⇄ Hsinchu Precision · single-cavity P20 prototype tool · aligned, pending final sign</div></div>
+        <span class="so-st aligned">◐ Aligned</span>
+      </div>
+      <div class="dfm-rev-foot"><button class="btn btn--sm">+ Propose a sign-off</button><span class="muted fs-12">Proposed → Aligned → Signed · both parties confirm before the part can be approved</span></div>
+    </div>
+
+    <!-- DFM Approval gate (terminal) -->
+    <div class="appr">
+      <span class="appr-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6.5v5c0 4.5 3.2 7.8 8 9.5 4.8-1.7 8-5 8-9.5v-5L12 3Z" stroke="#b7791f" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#b7791f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="appr-main">
+        <div class="appr-t">DFM Approval — cut steel <span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">Locked</span></div>
+        <div class="appr-sub">The terminal gate. It opens when <b style="color:var(--ink)">every issue is dispositioned</b>, <b style="color:var(--ink)">all sign-offs are signed</b>, and the approved revision is frozen — then steel can be cut. Right now: 2 issues open · 1 sign-off pending.</div>
+      </div>
+      <span class="appr-lock">3 items remaining</span>
+      <button class="btn" disabled style="opacity:.55;cursor:not-allowed">Approve &amp; freeze Rev C</button>
     </div>
 
     <!-- Activity log -->
@@ -385,10 +525,12 @@
   <div class="modal">
     <div class="modal-head"><h3>Invite reviewer</h3><button class="x" onclick="closeInvite()">×</button></div>
     <div class="modal-body">
-      <p>Share this part with the manufacturing partner through a time-bounded magic link — no account. They review the package, raise DFM issues, and validate fixes. Files stay scoped to this part.</p>
+      <p>Share this part with one provider through a time-bounded magic link — no account. They review the package, raise DFM issues, and validate fixes. This invite starts a new DFM, scoped to this provider only — they never see other providers' reviews.</p>
       <div class="field"><label>Magic link · expires in 14 days</label><div class="input-group"><span class="prefix" style="font-size:13px">🔗</span><input value="https://withchorus.ai/r/tm4-2001/8fK2q9x7" readonly /><button class="btn btn--sm" style="margin-left:8px">Copy</button></div></div>
       <div class="field"><label>Reviewer email</label><input class="input" value="benjamin.chen@hsinchu-precision.com" /></div>
       <div class="field"><label>Role</label><div class="select-wrap"><select class="select"><option>CM</option><option>Supplier</option><option>Fabricator</option><option>Tooling partner</option></select></div></div>
+      <div class="field"><label>Confidentiality gate</label><div class="select-wrap"><select class="select"><option>NDA required — files stay locked until accepted</option><option>NDA on file</option><option>Confidential · no download · watermarked</option></select></div></div>
+      <p style="font-size:12px;color:var(--muted)">Files unlock only after the reviewer accepts the NDA, and every page is watermarked with their identity. Package must be Complete before an invite can be sent.</p>
     </div>
     <div class="modal-foot">
       <a class="btn btn--sm" href="magic-link-view.html">Preview reviewer view</a>
@@ -403,6 +545,30 @@
   function openInvite(){ document.getElementById('inviteBg').classList.add('open'); }
   function closeInvite(){ document.getElementById('inviteBg').classList.remove('open'); }
   document.getElementById('inviteBg').addEventListener('click', function(e){ if (e.target === this) closeInvite(); });
+  function selectRev(e, rev){
+    if (e) e.preventDefault();
+    var nodes = document.querySelectorAll('.tree .tnode');
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('sel');
+    if (e && e.currentTarget) e.currentTarget.classList.add('sel');
+    var h = document.getElementById('pkgTitle'); if (h) h.textContent = 'Package — Rev ' + rev;
+    var chip = document.getElementById('pkgRevChip'); if (chip && chip.firstChild) chip.firstChild.textContent = 'Rev ' + rev + ' ';
+    // sync the 2D drawing to the selected revision
+    var drafts = { A: '0.5°', B: '1.0°', C: '1.5°' }, lean = { A: 2, B: 5, C: 9 };
+    var dd = document.getElementById('d2dDraft'); if (dd) dd.textContent = drafts[rev] || '1.5°';
+    var dv = document.getElementById('d2dRev'); if (dv) dv.textContent = rev;
+    var dw = document.getElementById('d2dWall'); if (dw) dw.setAttribute('transform', 'rotate(' + (lean[rev] || 9) + ' 135 478)');
+    ['A', 'B', 'C'].forEach(function (R) { var r = document.getElementById('d2dRow' + R); if (r) r.setAttribute('fill', R === rev ? 'rgba(0,149,113,.10)' : '#fff'); });
+  }
+  function setCadMode(m){
+    var v = document.querySelector('.viewer'), d = document.getElementById('cad2d');
+    if (!v || !d) return;
+    var two = m === '2d';
+    v.style.display = two ? 'none' : '';
+    d.style.display = two ? '' : 'none';
+    var b3 = document.getElementById('m3d'), b2 = document.getElementById('m2d');
+    if (b3) b3.classList.toggle('on', !two);
+    if (b2) b2.classList.toggle('on', two);
+  }
 </script>
 <script src="cadstore.js"></script>
 <script type="importmap">
@@ -420,6 +586,7 @@
   import { STLLoader } from 'three/addons/loaders/STLLoader.js';
   import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
   import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+  import { buildShape } from './cadgrid.js';
 
   const host = document.getElementById('cadHost');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -496,10 +663,8 @@
   }
 
   function loadDefault() {
-    new STLLoader().load('models/top-tube-assembly.stl',
-      geom => { showGeometry(geom); hint.textContent = 'enclosure-lower.stl · Rev C · drag a CAD file to replace'; },
-      undefined,
-      () => { showModel(buildProcedural(), false); hint.textContent = 'Drag to orbit · scroll to zoom'; });
+    showModel(buildShape('enclosure'), false);
+    hint.textContent = 'enclosure-lower · Rev C · drag a CAD file to replace';
   }
 
   (window.CadStore ? CadStore.takeCad() : Promise.resolve(null))

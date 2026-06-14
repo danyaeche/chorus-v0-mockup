@@ -21,6 +21,14 @@
   .isev.med { color: var(--amber-600); } .isev.med .d { background: var(--amber-600); }
   .isev.low { color: var(--muted); } .isev.low .d { background: var(--muted-2); }
   .cat { font-size: 11.5px; font-weight: 500; padding: 2px 9px; border-radius: 999px; background: var(--blue-50); color: var(--blue-600); }
+  .itype { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .itype::before { content: ""; width: 6px; height: 6px; border-radius: 2px; transform: rotate(45deg); background: currentColor; flex: none; }
+  .itype.show { background: #fbe9e7; color: #c0392b; }
+  .itype.find { background: #fef0d9; color: #b5651d; }
+  .itype.prop { background: var(--blue-50); color: var(--blue-600); }
+  .itype.info { background: #ededed; color: var(--ink-2); }
+  .type-filter .fchip { display: inline-flex; align-items: center; gap: 6px; }
+  .type-filter .sq { width: 7px; height: 7px; border-radius: 2px; transform: rotate(45deg); }
   .ist { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; }
   .ist.open { background: var(--red-50); color: var(--red-600); }
   .ist.accepted { background: var(--blue-50); color: var(--blue-600); }
@@ -45,60 +53,67 @@
     <div class="filter-chips">
       <span class="fchip on">All <b>34</b></span>
       <span class="fchip">Open <b>22</b></span>
-      <span class="fchip">Accepted <b>8</b></span>
+      <span class="fchip">Dispositioned <b>8</b></span>
       <span class="fchip">Awaiting validation <b>6</b></span>
       <span class="fchip">Validated <b>4</b></span>
       <span class="fchip">Closed <b>112</b></span>
     </div>
+    <div class="filter-chips type-filter" style="margin-top:-4px">
+      <span class="muted fs-12" style="align-self:center;margin-right:2px">Type</span>
+      <span class="fchip"><span class="sq" style="background:#c0392b"></span>Show-stopper <b>4</b></span>
+      <span class="fchip"><span class="sq" style="background:#b5651d"></span>Finding <b>21</b></span>
+      <span class="fchip"><span class="sq" style="background:var(--blue-600)"></span>Proposal <b>6</b></span>
+      <span class="fchip"><span class="sq" style="background:var(--muted-2)"></span>Info <b>3</b></span>
+    </div>
 
     <div class="tbl-wrap">
       <table class="tbl">
-        <thead><tr><th>#</th><th>Issue</th><th>Part</th><th>Severity</th><th>Category</th><th>Status</th><th style="text-align:right">Updated</th></tr></thead>
+        <thead><tr><th>#</th><th>Issue</th><th>Part</th><th>Type</th><th>Severity</th><th>Category</th><th>Status</th><th style="text-align:right">Updated</th></tr></thead>
         <tbody>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#14</span></td><td><span class="ititle">Ejector pins mark Class A face</span></td><td>Battery enclosure — lower</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#13</span></td><td><span class="ititle">Rib-to-wall ratio causes sink</span></td><td>Battery enclosure — lower</td>
-            <td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Geometry</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
+            <td><span class="itype info">Info</span></td><td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Geometry</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#12</span></td><td><span class="ititle">Insufficient draft for ejection</span></td><td>Battery enclosure — lower</td>
-            <td><span class="isev high"><span class="d"></span>High</span></td><td><span class="cat">Tooling</span></td><td><span class="ist await"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Awaiting validation</span></td><td style="text-align:right" class="muted">5h</td>
+            <td><span class="itype show">Show-stopper</span></td><td><span class="isev high"><span class="d"></span>High</span></td><td><span class="cat">Tooling</span></td><td><span class="ist await"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Awaiting validation</span></td><td style="text-align:right" class="muted">5h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#11</span></td><td><span class="ititle">Tolerance stack-up vs shrink won't hold</span></td><td>Controller housing</td>
-            <td><span class="isev crit"><span class="d"></span>Critical</span></td><td><span class="cat">Tolerance</span></td><td><span class="ist open">Open · needs decision</span></td><td style="text-align:right" class="muted">1d</td>
+            <td><span class="itype show">Show-stopper</span></td><td><span class="isev crit"><span class="d"></span>Critical</span></td><td><span class="cat">Tolerance</span></td><td><span class="ist open">Open · needs decision</span></td><td style="text-align:right" class="muted">1d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#10</span></td><td><span class="ititle">Undercut requires a lifter</span></td><td>Display bezel</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist accepted">Accepted</span></td><td style="text-align:right" class="muted">2d</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist accepted">Dispositioned · accepted</span></td><td style="text-align:right" class="muted">2d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#9</span></td><td><span class="ititle">Parting line across cosmetic edge</span></td><td>Battery enclosure — upper</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">1d</td>
+            <td><span class="itype prop">Proposal</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">1d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#8</span></td><td><span class="ititle">Snap-fit hook too stiff to assemble</span></td><td>Charge-port cap</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Assembly</span></td><td><span class="ist validated">Validated</span></td><td style="text-align:right" class="muted">3d</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Assembly</span></td><td><span class="ist validated">Validated</span></td><td style="text-align:right" class="muted">3d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#7</span></td><td><span class="ititle">Gate witness on cosmetic face</span></td><td>Battery enclosure — lower</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 13</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 13</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#6</span></td><td><span class="ititle">Material substitution PC-ABS → 20% GF nylon</span></td><td>Light lens</td>
-            <td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Material</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 10</td>
+            <td><span class="itype prop">Proposal</span></td><td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Material</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 10</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
             <td><span class="ino">#5</span></td><td><span class="ititle">Weld line at boss — cosmetic + strength</span></td><td>Controller housing</td>
-            <td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 8</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 8</td>
           </tr>
         </tbody>
       </table>
       <div class="tbl-foot">
-        <span class="muted fs-13">Showing 10 of 34 open · lifecycle: Open → Accepted → Implemented → Validated → Closed</span>
+        <span class="muted fs-13">Showing 10 of 34 open · derived state: Open → Dispositioned → Implemented → Validated → Closed</span>
         <div class="pager"><span class="cur">1</span><a href="#">2</a><a href="#">3</a></div>
       </div>
     </div>

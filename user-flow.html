@@ -95,6 +95,11 @@
   .who li::before { content: ""; position: absolute; left: 4px; top: 7px; width: 6px; height: 6px; border-radius: 999px; background: var(--green); }
   .who.partner li::before { background: var(--blue-600); }
   .who li.no::before { content: "✕"; background: none; color: var(--red-600); left: 2px; top: 0; font-size: 12px; font-weight: 700; }
+  .fixes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+  .fix { display: flex; gap: 13px; align-items: flex-start; }
+  .fx-n { flex: none; width: 26px; height: 26px; border-radius: 8px; background: rgba(0,149,113,.1); color: var(--green-600t); display: grid; place-items: center; font-family: var(--font-head); font-weight: 700; font-size: 13px; }
+  .fx-t { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; }
+  .fx-d { font-size: 13px; color: var(--muted); line-height: 1.55; }
 </style>
 </head>
 <body>
@@ -107,25 +112,26 @@
   <div class="hero">
     <div class="eyebrow">The DFM Workflow</div>
     <h1>The DFM Issue is the<br/>atomic unit of work.</h1>
-    <p>Chorus replaces the CAD → PowerPoint → email loop with a GitHub-Issues workflow for manufacturability. Every manufacturing risk becomes a tracked, stateful issue — raised on a revision, decided by the brand, implemented in a new revision, validated by the partner, and closed. A part is done when its open-issue count hits zero.</p>
-    <div class="pipe"><span>CAD</span><i>→</i><span>Issues</span><i>→</i><span>Resolution</span><i>→</i><span>Validation</span><i>→</i><span>Closure</span></div>
+    <p>Chorus replaces the CAD → PowerPoint → email loop with a GitHub-Issues workflow for manufacturability. Every manufacturing risk becomes a tracked, stateful issue — raised on a revision by a provider, decided by the brand, implemented in a new revision, validated by the reviewer, and closed. A part is cleared to cut steel — <b>DFM Approved</b> — when every issue is dispositioned and the joint sign-offs are signed.</p>
+    <div class="pipe"><span>Package</span><i>→</i><span>Issues</span><i>→</i><span>Disposition</span><i>→</i><span>Validation</span><i>→</i><span>Sign-off</span><i>→</i><span>DFM Approval</span></div>
   </div>
 
   <!-- 1 · atomic unit -->
   <div class="section">
     <h2><span class="n">1</span> The atomic unit</h2>
     <div class="card">
-      <p class="lead">Not the document. Not the RFQ. Not the quote. The unit of work is a single <span class="hl">DFM Issue</span> — one manufacturability concern, raised against one revision of one part, carried through a defined lifecycle until it is <b>validated and closed</b>. The hierarchy is <span class="hl">Part → Revision → Issue</span> — not Project → RFQ → Quote.</p>
+      <p class="lead">The unit of work is a single <span class="hl">DFM Issue</span> — one manufacturability concern, raised against one revision of one part <b>by one provider</b>, carried until it's <b>validated and closed</b>. Issues now carry a <span class="hl">Type</span> (show-stopper · finding · proposal · info) that routes them differently, and the terminal gate is <span class="hl">DFM Approval</span> — every issue dispositioned + joint sign-offs signed = cut steel.</p>
       <div class="fields">
         <div class="fld"><div class="fk">Title</div><div class="fv">Insufficient draft for ejection</div></div>
-        <div class="fld"><div class="fk">Description</div><div class="fv">The risk, in the reviewer's words</div></div>
-        <div class="fld"><div class="fk">Recommendation</div><div class="fv">Open draft to ≥1.5° (reviewer)</div></div>
+        <div class="fld"><div class="fk">Type ◆</div><div class="fv">Show-stopper · Finding · Proposal · Info</div></div>
         <div class="fld"><div class="fk">Severity</div><div class="fv">Critical · High · Medium · Low</div></div>
         <div class="fld"><div class="fk">Category</div><div class="fv">Geometry · Tolerance · Material · Tooling · Assembly · Process · Cost/Yield</div></div>
-        <div class="fld"><div class="fk">Brand decision</div><div class="fv">Accepted · Rejected · Needs clarification</div></div>
-        <div class="fld"><div class="fk">Implementation</div><div class="fv">Not started · In progress · Implemented in Rev B</div></div>
-        <div class="fld"><div class="fk">Validation</div><div class="fv">Pending · Validated · Failed</div></div>
-        <div class="fld"><div class="fk">Created / Resolved on</div><div class="fv">Rev A → Rev B</div></div>
+        <div class="fld"><div class="fk">Recommendation</div><div class="fv">the reviewer's proposed fix</div></div>
+        <div class="fld"><div class="fk">Cost / yield impact ◆</div><div class="fv">optional $ — future quote hook</div></div>
+        <div class="fld"><div class="fk">Brand decision</div><div class="fv">Accept · Reject · Needs clarification — rationale required on reject</div></div>
+        <div class="fld"><div class="fk">Implementation</div><div class="fv">Not started · In progress · Implemented in Rev X</div></div>
+        <div class="fld"><div class="fk">Validation</div><div class="fv">owner = the reviewer who raised it · created-on vs fixed-in rev</div></div>
+        <div class="fld"><div class="fk">Derived state ◆</div><div class="fv">Open → Dispositioned → Implemented → Validated → Closed</div></div>
       </div>
     </div>
   </div>
@@ -135,29 +141,39 @@
     <h2><span class="n">2</span> Object hierarchy</h2>
     <div class="tree">
 <pre><span class="t-ws">Workspace / Organization</span>
-<span class="t-br">│</span>
-<span class="t-br">└──</span> <span class="t-pr">Project</span>  <span class="t-note">(TM-4 Bike Program · many parts · rolls up DFMs across providers)</span>
-    <span class="t-br">├──</span> <span class="t-node">Project Metadata</span>  <span class="t-mut">name · product · owners · reviewers · status</span>
+<span class="t-br">└──</span> <span class="t-pr">Project</span>  <span class="t-note">(TM-4 Bike Program · rolls up parts &amp; DFMs across providers)</span>
+    <span class="t-br">├──</span> <span class="t-node">Project Metadata</span>  <span class="t-mut">name · product · brand &amp; engineering owner · status</span>
     <span class="t-br">│</span>
-    <span class="t-br">├──</span> <span class="t-node">Parts</span>
-    <span class="t-br">│   └──</span> <span class="t-node">Part</span>  <span class="t-note">(Battery enclosure — lower · Injection Mold)</span>
-    <span class="t-br">│       ├──</span> <span class="t-node">Part Metadata</span>  <span class="t-mut">number · material · process · owner · status</span>
-    <span class="t-br">│       ├──</span> <span class="t-node">Package</span>        <span class="t-mut">CAD/STEP · 2D drawing · render · material spec · volume</span>
-    <span class="t-br">│       ├──</span> <span class="t-node">Revisions</span>  <span class="t-mut">Rev A → Rev B → Rev C  (shared design — every provider reviews these)</span>
-    <span class="t-br">│       ├──</span> <span class="t-atom">DFMs</span>  <span class="t-note">◀── one per provider · parallel · confidential to each</span>
-    <span class="t-br">│       │   └──</span> <span class="t-node">DFM</span>  <span class="t-note">(Hsinchu Precision · CM · scoped magic link)</span>
-    <span class="t-br">│       │       └──</span> <span class="t-atom">DFM Issues</span>  <span class="t-note">◀── the atomic unit of work</span>
-    <span class="t-br">│       │           └──</span> <span class="t-atom">Issue</span>  <span class="t-note">(#12 Insufficient draft for ejection)</span>
-    <span class="t-br">│       │               ├──</span> <span class="t-node">Decision</span>        <span class="t-mut">Accept · Reject · Needs clarification</span>
-    <span class="t-br">│       │               ├──</span> <span class="t-node">Implementation</span>  <span class="t-mut">Rev B — engineering fix</span>
-    <span class="t-br">│       │               ├──</span> <span class="t-node">Validation</span>      <span class="t-mut">compare Rev A vs Rev B</span>
-    <span class="t-br">│       │               └──</span> <span class="t-node">Closure</span>         <span class="t-mut">Open Issues − 1</span>
-    <span class="t-br">│       ├──</span> <span class="t-node">Part State</span>     <span class="t-mut">Draft → Under review → DFM Active → Awaiting validation → DFM Complete</span>
-    <span class="t-br">│       └──</span> <span class="t-node">Activity</span>       <span class="t-mut">revision · issue created · decision · validation · closed</span>
+    <span class="t-br">├──</span> <span class="t-node">Part</span>  <span class="t-note">(Battery enclosure — lower · Injection Mold)</span>
+    <span class="t-br">│   ├──</span> <span class="t-node">Part Metadata</span>  <span class="t-mut">number · material · process · owner · state · Current Released Revision ◆</span>
+    <span class="t-br">│   ├──</span> <span class="t-node">Package</span>  <span class="t-note">◆ completeness ENFORCED</span>
+    <span class="t-br">│   │   ├──</span> <span class="t-mut">Required Items</span>  <span class="t-mut">◆ template by process — STEP · 2D+GD&amp;T · material spec · cosmetic grades · volume · regulatory</span>
+    <span class="t-br">│   │   └──</span> <span class="t-mut">Package State</span>  <span class="t-note">Incomplete → Complete  ◆ GATE: no reviewer invite until Complete</span>
+    <span class="t-br">│   ├──</span> <span class="t-node">Revisions</span>  <span class="t-mut">shared design — every provider reviews these · Rev A/B/N · Issues Implemented ◆ (back-links)</span>
+    <span class="t-br">│   ├──</span> <span class="t-atom">DFMs</span>  <span class="t-note">◆ one per provider · parallel · confidential to each</span>
+    <span class="t-br">│   │   └──</span> <span class="t-node">DFM</span>  <span class="t-note">(Hsinchu Precision · CM · scoped magic link)</span>
+    <span class="t-br">│   │       ├──</span> <span class="t-mut">Confidentiality Boundary</span>  <span class="t-note">◆ providers never see each other's DFMs</span>
+    <span class="t-br">│   │       ├──</span> <span class="t-mut">Current Revision Under Review</span>  <span class="t-note">◆ per-DFM pointer — P1 on Rev B while P2 on Rev A</span>
+    <span class="t-br">│   │       ├──</span> <span class="t-atom">Issue</span>  <span class="t-note">(#12 Insufficient draft for ejection) ◀── atomic unit</span>
+    <span class="t-br">│   │       │   ├──</span> <span class="t-node">Type</span>  <span class="t-note">◆ Show-stopper · Finding · Proposal · Info</span>
+    <span class="t-br">│   │       │   ├──</span> <span class="t-node">Category · Severity</span>  <span class="t-mut">+ created-on rev / by · recommendation · cost-yield impact ◆</span>
+    <span class="t-br">│   │       │   ├──</span> <span class="t-node">Brand Decision</span>  <span class="t-mut">Accept · Reject · Needs clarification — rationale required on reject ◆</span>
+    <span class="t-br">│   │       │   ├──</span> <span class="t-node">Implementation</span>  <span class="t-mut">Not started · In progress · Implemented in Rev X ◆</span>
+    <span class="t-br">│   │       │   ├──</span> <span class="t-node">Validation</span>  <span class="t-mut">owner = the reviewer who raised it · created-on vs fixed-in rev</span>
+    <span class="t-br">│   │       │   └──</span> <span class="t-node">Derived State</span>  <span class="t-note">◆ Open → Dispositioned → Implemented → Validated → Closed</span>
+    <span class="t-br">│   │       └──</span> <span class="t-mut">DFM State</span>  <span class="t-mut">Invited → In Review → Feedback Submitted → Awaiting Validation → Complete</span>
+    <span class="t-br">│   ├──</span> <span class="t-atom">Issue Groups</span>  <span class="t-note">◆ NEW · brand-side · cross-DFM rollup</span>
+    <span class="t-br">│   │   └──</span> <span class="t-mut">Group</span>  <span class="t-mut">links the same issue across providers · Conflict Flag · one Unified Decision (cascades)</span>
+    <span class="t-br">│   ├──</span> <span class="t-atom">Sign-offs</span>  <span class="t-note">◆ NEW · joint alignments — first-class, not issues</span>
+    <span class="t-br">│   │   └──</span> <span class="t-mut">Sign-off</span>  <span class="t-mut">parting line · gate · material lock · tooling · both parties confirm · Proposed → Aligned → Signed</span>
+    <span class="t-br">│   ├──</span> <span class="t-atom">DFM Approval</span>  <span class="t-note">◆ NEW · the gate that matters — cut steel</span>
+    <span class="t-br">│   │   └──</span> <span class="t-mut">entry: all issues dispositioned + sign-offs signed · approved revision frozen · PO/tooling ref</span>
+    <span class="t-br">│   ├──</span> <span class="t-node">Part State</span>  <span class="t-mut">Draft → Package Complete ◆ → DFM Active → Awaiting Validation → DFM Approved ◆</span>
+    <span class="t-br">│   └──</span> <span class="t-node">Activity</span>  <span class="t-mut">revision · issue · decision · validation · Sign-off recorded ◆ · DFM Approved ◆</span>
     <span class="t-br">│</span>
-    <span class="t-br">├──</span> <span class="t-node">External Reviewers</span>  <span class="t-mut">company · role (CM/Supplier/Fabricator/Tooling) · scope · magic link</span>
-    <span class="t-br">├──</span> <span class="t-node">Project Activity Feed</span>  <span class="t-mut">reviewer invited · part added · revision · issue · validation · DFM complete</span>
-    <span class="t-br">└──</span> <span class="t-node">Project State</span>  <span class="t-mut">Setup → DFM Active → DFM Complete</span></pre>
+    <span class="t-br">├──</span> <span class="t-node">External Reviewers</span>  <span class="t-mut">company · role · NDA status ◆ (gate before files) · access scope · magic link (expiry · revoke · watermark ◆) · activity log ◆</span>
+    <span class="t-br">├──</span> <span class="t-node">Project Activity Feed</span>  <span class="t-mut">invited · part · revision · issue · decision · validation · Sign-off ◆ · DFM Approved ◆</span>
+    <span class="t-br">└──</span> <span class="t-node">Project State</span>  <span class="t-mut">Setup → DFM Active → DFM Approved ◆</span></pre>
     </div>
   </div>
 
@@ -168,39 +184,39 @@
       <div class="sm-path">
         <span class="pill open"><span class="dot"></span>Open</span>
         <span class="arr">→</span>
-        <span class="pill accepted"><span class="dot"></span>Accepted</span>
+        <span class="pill accepted"><span class="dot"></span>Dispositioned</span>
         <span class="arr">→</span>
         <span class="pill impl"><span class="dot"></span>Implemented</span>
-        <span class="arr">→</span>
-        <span class="pill valreq"><span class="dot"></span>Validation requested</span>
         <span class="arr">→</span>
         <span class="pill validated"><span class="dot"></span>Validated</span>
         <span class="arr">→</span>
         <span class="pill closed"><span class="dot"></span>Closed</span>
       </div>
       <div class="sm-alt">
-        <div class="alt"><span class="lbl">Reject path</span><span class="pill open"><span class="dot"></span>Open</span><span class="arr">→</span><span class="pill rejected"><span class="dot"></span>Rejected</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— terminal · brand declines the change</span></div>
-        <div class="alt"><span class="lbl">Clarify loop</span><span class="pill open"><span class="dot"></span>Open</span><span class="arr">→</span><span class="pill clarify"><span class="dot"></span>Needs clarification</span><span class="arr">→</span><span class="pill open"><span class="dot"></span>Open</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— partner answers, issue re-opens</span></div>
-        <div class="alt"><span class="lbl">Failed validation</span><span class="pill valreq"><span class="dot"></span>Validation requested</span><span class="arr">→</span><span class="pill failed"><span class="dot"></span>Validation failed</span><span class="arr">→</span><span class="pill open"><span class="dot"></span>Open</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— fix didn't hold, back to the brand</span></div>
+        <div class="alt"><span class="lbl">Reject path</span><span class="pill open"><span class="dot"></span>Open</span><span class="arr">→</span><span class="pill rejected"><span class="dot"></span>Dispositioned · rejected</span><span class="arr">→</span><span class="pill closed"><span class="dot"></span>Closed</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— terminal · rationale required ◆</span></div>
+        <div class="alt"><span class="lbl">Clarify loop</span><span class="pill open"><span class="dot"></span>Open</span><span class="arr">→</span><span class="pill clarify"><span class="dot"></span>Needs clarification</span><span class="arr">→</span><span class="pill open"><span class="dot"></span>Open</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— reviewer answers, issue re-opens</span></div>
+        <div class="alt"><span class="lbl">Failed validation</span><span class="pill impl"><span class="dot"></span>Implemented</span><span class="arr">→</span><span class="pill failed"><span class="dot"></span>Validation failed</span><span class="arr">→</span><span class="pill open"><span class="dot"></span>Open</span><span class="t-mut" style="color:var(--muted);font-size:12.5px">— fix didn't hold, back to the brand</span></div>
       </div>
+      <div style="margin-top:18px;border-top:1px dashed var(--line);padding-top:14px;font-size:13px;color:var(--muted);line-height:1.55">Roll-up gate <b style="color:var(--ink)">◆</b> — a single issue closes here, but the <b style="color:var(--ink)">part</b> only reaches <b style="color:var(--green-600t)">DFM Approved</b> when <b style="color:var(--ink)">every</b> issue is dispositioned/closed <b style="color:var(--ink)">and</b> all joint <b style="color:var(--ink)">sign-offs are signed</b>. At that moment the approved revision is frozen and steel can be cut.</div>
     </div>
   </div>
 
   <!-- 4 · 12 steps -->
   <div class="section">
-    <h2><span class="n">4</span> The core flow · 10 steps</h2>
+    <h2><span class="n">4</span> The core flow · 11 steps</h2>
     <div class="card">
       <div class="steps">
-        <div class="step done"><span class="sn">1</span><div class="sbody"><div class="st">Create Project<span class="actor brand">Brand</span></div><div class="sm2">Brand creates a project with one or more parts; each part can be DFM'd by multiple providers.</div></div></div>
-        <div class="step done"><span class="sn">2</span><div class="sbody"><div class="st">Add Part<span class="actor brand">Brand</span></div><div class="sm2">Create a part record — it carries its own revisions and issue ledger.</div></div></div>
-        <div class="step done"><span class="sn">3</span><div class="sbody"><div class="st">Upload Package<span class="actor brand">Brand</span></div><div class="sm2">CAD/STEP, 2D drawing, material spec, volume forecast, render — Rev A.</div></div></div>
-        <div class="step done"><span class="sn">4</span><div class="sbody"><div class="st">Invite Reviewer<span class="actor brand">Brand</span></div><div class="sm2">Scoped magic link to a CM / supplier / fabricator — no account. Each invite starts a new DFM for that part.</div></div></div>
-        <div class="step"><span class="sn">5</span><div class="sbody"><div class="st">Review Part<span class="actor partner">Reviewer</span></div><div class="sm2">Reviewer examines the package and creates DFM issues.</div></div></div>
-        <div class="step"><span class="sn">6</span><div class="sbody"><div class="st">Disposition Issues<span class="actor brand">Brand</span></div><div class="sm2">Accept · reject · request clarification on each issue, with rationale.</div></div></div>
-        <div class="step"><span class="sn">7</span><div class="sbody"><div class="st">Upload New Revision<span class="actor brand">Brand</span></div><div class="sm2">Rev B (or later) implements the accepted changes.</div></div></div>
-        <div class="step"><span class="sn">8</span><div class="sbody"><div class="st">Validate Fixes<span class="actor partner">Reviewer</span></div><div class="sm2">Reviewer confirms whether each issue was actually resolved.</div></div></div>
-        <div class="step"><span class="sn">9</span><div class="sbody"><div class="st">Close Issues<span class="actor system">System</span></div><div class="sm2">Validated issues close; failed validations reopen the issue.</div></div></div>
-        <div class="step"><span class="sn">10</span><div class="sbody"><div class="st">DFM Complete<span class="actor system">System</span></div><div class="sm2">All critical issues resolved &amp; validated → part/project marked DFM complete.</div></div></div>
+        <div class="step done"><span class="sn">1</span><div class="sbody"><div class="st">Create Project + Parts<span class="actor brand">Brand</span></div><div class="sm2">One project, one or more parts — each can be DFM'd by multiple providers.</div></div></div>
+        <div class="step done"><span class="sn">2</span><div class="sbody"><div class="st">Upload Package<span class="actor brand">Brand</span></div><div class="sm2">STEP · 2D+GD&amp;T · material spec · cosmetic grades · volume — Rev A.</div></div></div>
+        <div class="step done"><span class="sn">3</span><div class="sbody"><div class="st">Package Complete<span class="actor system">Gate ◆</span></div><div class="sm2">The package must meet the process-type checklist before reviewers can be invited — bad inputs were the #1 cause of useless DFM feedback.</div></div></div>
+        <div class="step done"><span class="sn">4</span><div class="sbody"><div class="st">Invite Reviewer(s)<span class="actor brand">Brand</span></div><div class="sm2">NDA gate, then a scoped magic link per provider — each starts its own DFM.</div></div></div>
+        <div class="step"><span class="sn">5</span><div class="sbody"><div class="st">Review Part<span class="actor partner">Reviewer</span></div><div class="sm2">Raises typed issues — show-stopper · finding · proposal · info.</div></div></div>
+        <div class="step"><span class="sn">6</span><div class="sbody"><div class="st">Disposition Issues<span class="actor brand">Brand</span></div><div class="sm2">Accept · reject (rationale required) · clarify. Issue Groups roll up cross-provider duplicates with a conflict flag.</div></div></div>
+        <div class="step"><span class="sn">7</span><div class="sbody"><div class="st">Sign-offs<span class="actor system">Joint ◆</span></div><div class="sm2">Parting line, gate location, material lock — both parties sign. First-class, not issues.</div></div></div>
+        <div class="step"><span class="sn">8</span><div class="sbody"><div class="st">Upload New Revision<span class="actor brand">Brand</span></div><div class="sm2">Implements accepted changes; each DFM's review pointer advances at its own pace.</div></div></div>
+        <div class="step"><span class="sn">9</span><div class="sbody"><div class="st">Validate Fixes<span class="actor partner">Reviewer</span></div><div class="sm2">The reviewer who raised the issue re-confirms — created-on rev vs fixed-in rev.</div></div></div>
+        <div class="step"><span class="sn">10</span><div class="sbody"><div class="st">Close Issues<span class="actor system">System</span></div><div class="sm2">Validated issues close; failed validations reopen.</div></div></div>
+        <div class="step"><span class="sn">11</span><div class="sbody"><div class="st">DFM Approval — cut steel<span class="actor system">Joint ◆</span></div><div class="sm2">All issues dispositioned + sign-offs signed → freeze the approved revision → steel can be cut. This is the moment value is realized.</div></div></div>
       </div>
     </div>
   </div>
@@ -219,13 +235,28 @@
         </ul>
       </div>
       <div class="who partner">
-        <div class="wh"><div class="wav">HP</div><div><div class="wn">Manufacturing Partner</div><div class="wr">Hsinchu Precision · owns manufacturability</div></div></div>
+        <div class="wh"><div class="wav">HP</div><div><div class="wn">External Reviewer · one per provider</div><div class="wr">Hsinchu Precision · owns manufacturability</div></div></div>
         <ul>
-          <li>Reviews revisions and raises DFM issues with recommendations</li>
-          <li>Validates fixes by comparing revisions</li>
-          <li>Confirms the part is manufacturable</li>
-          <li class="no">Cannot see unrelated projects or parts</li>
+          <li>Reviews revisions and raises typed DFM issues with recommendations</li>
+          <li>Validates the fixes to its <i>own</i> issues by comparing revisions</li>
+          <li>Co-signs the joint sign-offs — parting line, gate, material</li>
+          <li class="no">NDA-gated, watermarked, and walled off from other providers' DFMs</li>
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · what's new in v2 -->
+  <div class="section">
+    <h2><span class="n">6</span> What's new in v2 · the six fixes <span style="color:var(--green-600t)">◆</span></h2>
+    <div class="card">
+      <div class="fixes">
+        <div class="fix"><div class="fx-n">1</div><div><div class="fx-t">Package gate</div><div class="fx-d">Reviewers can't be invited until the OEM package meets the process-type checklist. Bad inputs were the #1 cause of useless DFM feedback.</div></div></div>
+        <div class="fix"><div class="fx-n">2</div><div><div class="fx-t">Issue Type axis</div><div class="fx-d">Show-stoppers, findings, proposals, and info notes flow through disposition differently — not everything is a blocking "must fix."</div></div></div>
+        <div class="fix"><div class="fx-n">3</div><div><div class="fx-t">Per-DFM revision pointer</div><div class="fx-d">Each provider reviews at its own pace — Provider 1 can be on Rev B while Provider 2 is still on Rev A. Revisions are shared; review state isn't.</div></div></div>
+        <div class="fix"><div class="fx-n">4</div><div><div class="fx-t">Issue Groups</div><div class="fx-d">The brand dispositions one cross-provider duplicate once, with a conflict flag when providers disagree. One unified decision cascades to every linked DFM.</div></div></div>
+        <div class="fix"><div class="fx-n">5</div><div><div class="fx-t">Sign-offs</div><div class="fx-d">Parting line, gate location, and material lock are joint agreements between named parties — first-class objects, not issues one side "accepts."</div></div></div>
+        <div class="fix"><div class="fx-n">6</div><div><div class="fx-t">DFM Approval gate</div><div class="fx-d">The terminal state is the steel-cut decision: all issues dispositioned + sign-offs signed + the approved revision frozen. This replaces the vague "DFM Complete."</div></div></div>
       </div>
     </div>
   </div>
