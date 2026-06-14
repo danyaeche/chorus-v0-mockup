@@ -28,17 +28,19 @@ if (host) {
   // ---- Globe built from latitude rings, drawn as dashes of varying length ----
   const globe = new THREE.Group();
   (() => {
-    const verts = [], LATS = 30;
+    // randomized per page load → a different dash permutation on every refresh
+    const verts = [], LATS = 24 + (Math.random() * 11 | 0), dashMin = 0.05 + Math.random() * 0.04;
     for (let l = 0; l < LATS; l++) {
       const lat = (l / (LATS - 1) - 0.5) * Math.PI * 0.94;
-      let ang = Math.random() * 0.6;
-      while (ang < Math.PI * 2) {
-        const len = 0.06 + Math.random() * 0.18, a2 = Math.min(Math.PI * 2, ang + len), k = 6;
+      const start = Math.random() * Math.PI * 2;   // random phase per ring
+      let a = 0;
+      while (a < Math.PI * 2) {
+        const len = dashMin + Math.random() * 0.18, a2 = Math.min(Math.PI * 2, a + len), k = 6;
         for (let s = 0; s < k; s++) {
-          const p1 = sp(lat, ang + (a2 - ang) * s / k), p2 = sp(lat, ang + (a2 - ang) * (s + 1) / k);
+          const p1 = sp(lat, start + a + (a2 - a) * s / k), p2 = sp(lat, start + a + (a2 - a) * (s + 1) / k);
           verts.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
         }
-        ang = a2 + 0.045 + Math.random() * 0.06;
+        a = a2 + 0.045 + Math.random() * 0.06;
       }
     }
     const g = new THREE.BufferGeometry();
