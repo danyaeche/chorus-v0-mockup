@@ -106,22 +106,28 @@
   }
 
   function titleBlock(o) {
-    var x = 648, y = 556, w = 328, h = 120, midx = x + w * 0.6;
-    function fld(tx, ty, k, v, id) { return '<text x="' + tx + '" y="' + ty + '" font-size="7.5" fill="' + DIM + '">' + e(k) + '</text><text x="' + tx + '" y="' + (ty + 13) + '" font-size="11" fill="' + INK + '"' + (id ? ' id="' + id + '"' : '') + '>' + e(v) + '</text>'; }
+    var x = 648, y = 540, w = 328, h = 136, midx = x + w * 0.6;
+    function fld(tx, ty, k, v, id) { return '<text x="' + tx + '" y="' + ty + '" font-size="7.5" fill="' + DIM + '">' + e(k) + '</text><text x="' + tx + '" y="' + (ty + 12) + '" font-size="11" fill="' + INK + '"' + (id ? ' id="' + id + '"' : '') + '>' + e(v) + '</text>'; }
     return '<g font-family="' + F + '">'
       + '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + FILL + '" stroke="' + INK + '"/>'
+      // header band — Chorus stamp (logo lockup)
       + '<line x1="' + x + '" y1="' + (y + 34) + '" x2="' + (x + w) + '" y2="' + (y + 34) + '" stroke="' + INK + '"/>'
-      + '<line x1="' + midx + '" y1="' + (y + 34) + '" x2="' + midx + '" y2="' + (y + h) + '" stroke="' + LN + '"/>'
-      + '<line x1="' + x + '" y1="' + (y + 64) + '" x2="' + (x + w) + '" y2="' + (y + 64) + '" stroke="' + LN + '"/>'
-      + '<line x1="' + x + '" y1="' + (y + 92) + '" x2="' + (x + w) + '" y2="' + (y + 92) + '" stroke="' + LN + '"/>'
-      + '<text x="' + (x + 12) + '" y="' + (y + 23) + '" font-size="16" font-weight="700" fill="' + INK + '" font-family="' + FH + '">chorus</text>'
+      + '<image href="logo.png" xlink:href="logo.png" x="' + (x + 10) + '" y="' + (y + 7) + '" width="20" height="20"/>'
+      + '<text x="' + (x + 37) + '" y="' + (y + 23) + '" font-size="17" font-weight="700" fill="' + INK + '" font-family="' + FH + '" letter-spacing="-0.01em">chorus</text>'
       + '<text x="' + (x + w - 12) + '" y="' + (y + 22) + '" font-size="9.5" fill="' + DIM + '" text-anchor="end">DFM DRAWING</text>'
+      // field grid
+      + '<line x1="' + midx + '" y1="' + (y + 34) + '" x2="' + midx + '" y2="' + (y + 114) + '" stroke="' + LN + '"/>'
+      + '<line x1="' + x + '" y1="' + (y + 61) + '" x2="' + (x + w) + '" y2="' + (y + 61) + '" stroke="' + LN + '"/>'
+      + '<line x1="' + x + '" y1="' + (y + 88) + '" x2="' + (x + w) + '" y2="' + (y + 88) + '" stroke="' + LN + '"/>'
+      + '<line x1="' + x + '" y1="' + (y + 114) + '" x2="' + (x + w) + '" y2="' + (y + 114) + '" stroke="' + INK + '"/>'
       + fld(x + 10, y + 46, 'TITLE', o.title || '')
-      + fld(x + 10, y + 76, 'PART NO', o.number || '')
-      + fld(x + 10, y + 104, 'MATERIAL', o.material || '')
+      + fld(x + 10, y + 73, 'PART NO', o.number || '')
+      + fld(x + 10, y + 100, 'MATERIAL', o.material || '')
       + fld(midx + 10, y + 46, 'PROCESS', o.process || '')
-      + fld(midx + 10, y + 76, 'REV', o.rev || '', o.revId)
-      + fld(midx + 10, y + 104, 'SCALE', o.scale || '1:2 · mm')
+      + fld(midx + 10, y + 73, 'REV', o.rev || '', o.revId)
+      + fld(midx + 10, y + 100, 'SCALE', o.scale || '1:2 · mm')
+      // stamp / copyright strip
+      + '<text x="' + (x + 10) + '" y="' + (y + 129) + '" font-size="7.5" fill="' + DIM + '">© Chorus, Inc. 2026 · DFM drawing — generated, not for manufacture</text>'
       + '</g>';
   }
 

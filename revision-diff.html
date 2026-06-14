@@ -8,28 +8,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <style>
-  .detail { padding: 22px 26px; max-width: 1120px; margin: 0 auto; }
+  .detail { padding: 22px 26px; max-width: 1260px; margin: 0 auto; }
   .crumbs { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
   .crumbs a:hover { color: var(--ink); }
   .crumbs .sep { color: var(--line); }
-  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
   .detail-head h1 { font-size: 22px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
   .detail-head .sub { color: var(--muted); font-size: 13px; }
-  .cmp-sel { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-2); }
+  .cmp-sel { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
   .cmp-sel .pill2 { background: #eef1f0; border-radius: 999px; padding: 4px 11px; font-weight: 600; }
-  .diff-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
-  .diff-pane { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-  .diff-pane.changed { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
-  .diff-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line-2); font-size: 13px; font-weight: 600; }
-  .diff-view { aspect-ratio: 16/11; background: radial-gradient(120% 120% at 50% 20%, #fbfcfc 0%, #eef1f1 55%, #e2e6e6 100%); position: relative; display: grid; place-items: center; }
-  .diff-view .silh { width: 64%; opacity: .55; }
-  .diff-view .tag { position: absolute; top: 12px; left: 14px; font-size: 11px; color: var(--muted); background: rgba(255,255,255,.65); padding: 3px 8px; border-radius: 999px; }
-  .di { display: flex; gap: 10px; padding: 11px 16px; font-size: 13px; align-items: flex-start; border-top: 1px solid var(--line-2); }
-  .di-badge { font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 4px; flex: none; margin-top: 1px; }
+  .cmp-sel .arrow { color: var(--muted-2); }
+
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .panel.changed { border-color: var(--green); box-shadow: 0 0 0 1px rgba(0,149,113,.45); }
+
+  /* side-by-side viewers */
+  .cmp2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 13px; }
+  .vhead { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border-bottom: 1px solid var(--line-2); }
+  .vhead .rv { font-weight: 700; font-family: var(--font-head); font-size: 14px; }
+  .vhead .mt { color: var(--muted); font-size: 12px; }
+  .vhead .vtoggles { margin-left: auto; display: flex; gap: 6px; }
+  .vhead .vtoggles button { font-size: 11px; font-weight: 500; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 4px 9px; border-radius: 7px; cursor: pointer; }
+  .vhead .vtoggles button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .viewer { position: relative; aspect-ratio: 4/3; background: radial-gradient(125% 125% at 50% 10%, #ffffff 0%, #f5f7f8 58%, #e9edee 100%); overflow: hidden; }
+  .viewer .host { position: absolute; inset: 0; cursor: grab; } .viewer .host:active { cursor: grabbing; }
+  .viewer .host canvas { display: block; }
+  .tagL { position: absolute; top: 12px; left: 14px; font-size: 11px; color: var(--muted); background: rgba(255,255,255,.7); padding: 3px 9px; border-radius: 999px; }
+  .legend { position: absolute; bottom: 12px; left: 14px; display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,.85); border: 1px solid var(--line-2); border-radius: 9px; padding: 8px 10px; backdrop-filter: blur(3px); }
+  .legend .lg { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--ink-2); font-weight: 500; }
+  .legend .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+  .sync-bar { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .sync-bar button { font-size: 11.5px; font-weight: 500; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 5px 11px; border-radius: 8px; cursor: pointer; }
+  .sync-bar button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .diff-grid { display: grid; grid-template-columns: 1fr 372px; gap: 16px; align-items: start; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(--line-2); }
+  .panel-head h2 { font-size: 14px; margin: 0; font-weight: 600; }
+  .di { display: flex; gap: 11px; padding: 13px 16px; border-bottom: 1px solid var(--line-2); text-decoration: none; color: inherit; }
+  .di:last-of-type { border-bottom: 0; }
+  .di:hover { background: #fafafa; }
+  .di-badge { font-size: 10px; font-weight: 700; letter-spacing: .03em; padding: 2px 6px; border-radius: 4px; flex: none; margin-top: 1px; height: fit-content; }
+  .di-badge.mod { background: #f6ecd6; color: #b5751c; }
   .di-badge.add { background: var(--green-50); color: var(--green-600t); }
-  .di-badge.mod { background: #f5ecd4; color: var(--amber-600); }
   .di-badge.del { background: var(--red-50); color: var(--red-600); }
-  .di .t { font-weight: 500; } .di .m { color: var(--muted); font-size: 12.5px; }
+  .di .grow { flex: 1; min-width: 0; }
+  .di .t { font-size: 13px; font-weight: 500; }
+  .di .m { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+  .di .lk { font-size: 11.5px; color: var(--green); font-weight: 500; margin-top: 5px; display: inline-block; }
+  .spec2 { display: inline-flex; align-items: center; gap: 6px; font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; background: #f1f3f3; border-radius: 6px; padding: 2px 8px; margin-top: 6px; }
+  .spec2 b { color: var(--green-600t); }
+  .panel-foot { padding: 11px 16px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line-2); line-height: 1.5; }
+  .rev-note { background: #fbfdfc; }
 </style>
 </head>
 <body>
@@ -38,7 +68,7 @@
     <div class="crumbs">
       <a href="projects.html">Projects</a><span class="sep">/</span>
       <a href="project-detail.html?p=TM-4%20Bike%20Program">TM-4 Bike Program</a><span class="sep">/</span>
-      <a href="part-detail.html">Top tube assembly</a><span class="sep">/</span>
+      <a href="part-detail.html">Battery enclosure — lower</a><span class="sep">/</span>
       <span style="color:var(--ink);font-weight:500">Compare revisions</span>
       <span style="margin-left:auto"><a class="btn btn--sm" href="part-detail.html">Back to part</a></span>
     </div>
@@ -46,34 +76,190 @@
     <div class="detail-head">
       <div>
         <h1>Revision diff <span class="badge badge--green">3 changes</span></h1>
-        <div class="sub">Top tube assembly · TM-4-1001</div>
+        <div class="sub">Battery enclosure — lower · TM-4-2001 · Injection Mold · PC-ABS</div>
       </div>
-      <div class="cmp-sel">Comparing <span class="pill2">Rev 2</span> → <span class="pill2">Rev 3</span></div>
+      <div class="cmp-sel">Comparing <span class="pill2">Rev A</span><span class="arrow">→</span><span class="pill2">Rev C</span></div>
     </div>
 
-    <div class="diff-wrap">
-      <div class="diff-pane">
-        <div class="diff-head"><span>Rev 2 · May 13</span><span class="muted fs-12">previous</span></div>
-        <div class="diff-view"><span class="tag">top-tube-assembly · Rev 2</span>
-          <svg class="silh" viewBox="0 0 200 150" fill="none"><path d="M28 96 L150 96 L172 60 L150 60 L40 60 Z" stroke="#9aa3a1" stroke-width="3" stroke-linejoin="round"/><circle cx="28" cy="96" r="14" stroke="#9aa3a1" stroke-width="3"/><circle cx="150" cy="96" r="14" stroke="#9aa3a1" stroke-width="3"/><path d="M150 60 L165 30" stroke="#9aa3a1" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
+    <!-- side-by-side: previous (plain) vs current (highlighted) -->
+    <div class="cmp2">
+      <div class="panel">
+        <div class="vhead"><span class="rv">Rev A</span><span class="mt">previous · Apr 8</span></div>
+        <div class="viewer"><div id="hostA" class="host"></div><div class="tagL">baseline geometry</div></div>
       </div>
-      <div class="diff-pane changed">
-        <div class="diff-head"><span>Rev 3 · May 16</span><span class="badge badge--green" style="height:18px;font-size:11px">Current</span></div>
-        <div class="diff-view"><span class="tag">top-tube-assembly · Rev 3</span>
-          <svg class="silh" viewBox="0 0 200 150" fill="none"><path d="M28 96 L150 96 L172 60 L150 60 L40 60 Z" stroke="#1f7a4d" stroke-width="3.4" stroke-linejoin="round"/><circle cx="28" cy="96" r="14" stroke="#1f7a4d" stroke-width="3.4"/><circle cx="150" cy="96" r="14" stroke="#1f7a4d" stroke-width="3.4"/><path d="M150 60 L165 30" stroke="#1f7a4d" stroke-width="3.4" stroke-linecap="round"/><path d="M44 60 q-8 8 0 16" stroke="#1f7a4d" stroke-width="3"/></svg>
+      <div class="panel changed">
+        <div class="vhead"><span class="rv">Rev C</span><span class="mt">current · May 16</span>
+          <span class="vtoggles">
+            <button id="btnGhost" class="on" onclick="toggleGhost()">Ghost body</button>
+            <button id="btnDiff" class="on" onclick="toggleDiff()">Highlight changes</button>
+          </span>
+        </div>
+        <div class="viewer"><div id="hostC" class="host"></div>
+          <div class="legend">
+            <div class="lg"><span class="sw" style="background:#e0973a"></span>Modified</div>
+            <div class="lg"><span class="sw" style="background:#1f9d62"></span>Added in Rev C</div>
+            <div class="lg"><span class="sw" style="background:#c0392b"></span>Removed (Rev A)</div>
+          </div>
         </div>
       </div>
     </div>
+    <div class="sync-bar">Drag either model — both stay in sync <button id="btnSpin" class="on" onclick="toggleSpin()">↻ Auto-rotate</button></div>
 
-    <div class="panel">
-      <div class="panel-head"><h3>Changes · Rev 2 → Rev 3</h3><span class="muted fs-12">3 changes</span></div>
-      <div class="di"><span class="di-badge mod">MOD</span><div><div class="t">Wall thickness · dropout</div><div class="m">1.5 mm → 2.2 mm — for a sound weld (resolves Benjamin's redline)</div></div></div>
-      <div class="di"><span class="di-badge add">ADD</span><div><div class="t">Gusset fillet</div><div class="m">3 mm fillet added at the gusset for torch clearance</div></div></div>
-      <div class="di"><span class="di-badge mod">MOD</span><div><div class="t">Head-tube bore tolerance</div><div class="m">±0.2 → ±0.1 mm</div></div></div>
+    <!-- change list -->
+    <div class="diff-grid">
+      <div class="panel">
+        <div class="panel-head"><h2>What changed · Rev A → Rev C</h2><span class="muted fs-12">highlighted on the current model</span></div>
+        <a class="di" href="issue-detail.html">
+          <span class="di-badge mod">MOD</span>
+          <div class="grow">
+            <div class="t">Draft opened on textured side walls</div>
+            <div class="m">All four textured walls re-drafted so the part releases cleanly from the cavity.</div>
+            <div class="spec2">0.5° → <b>1.5°</b></div>
+            <span class="lk">Resolves #12 · Insufficient draft for ejection →</span>
+          </div>
+        </a>
+        <a class="di" href="issue-detail.html">
+          <span class="di-badge del">MOVE</span>
+          <div class="grow">
+            <div class="t">Gate relocated off the Class A face</div>
+            <div class="m">Sub-gate moved 21 mm to a non-cosmetic rib so the witness mark is hidden.</div>
+            <span class="lk">Resolves #7 · Gate witness on cosmetic face →</span>
+          </div>
+        </a>
+        <a class="di" href="issue-detail.html">
+          <span class="di-badge add">ADD</span>
+          <div class="grow">
+            <div class="t">Ejector-pin relief added near boss</div>
+            <div class="m">Local relief pocket added so ejector pins clear the Class A surface.</div>
+            <span class="lk">Addresses #14 · Ejector pins mark Class A →</span>
+          </div>
+        </a>
+        <div class="panel-foot">The left model is Rev A as submitted. The right model is Rev C with the deltas highlighted — toggle <b>Ghost body</b> to fade the unchanged shell so only the changes show.</div>
+      </div>
+
+      <div class="panel rev-note">
+        <div class="panel-head"><h2>Revisions</h2></div>
+        <div style="padding:13px 16px;font-size:12.5px;color:var(--ink-2);line-height:1.6">
+          <div><b>Rev A</b> · Apr 8 — first review package · raised 4 issues</div>
+          <div style="margin-top:6px"><b>Rev C</b> · May 16 — candidate fix · draft, gate, ejector relief</div>
+          <div style="margin-top:9px;color:var(--muted)">Rev B is skipped here — <a href="part-detail.html" style="color:var(--green);font-weight:500">compare A ↔ B</a></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/build/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+  const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+  const cyl = (r, h) => new THREE.CylinderGeometry(r, r, h, 36);
+
+  // shared materials
+  const matBase  = new THREE.MeshStandardMaterial({ color: 0xbcc2c6, metalness: 0.16, roughness: 0.55 });
+  const matMod   = new THREE.MeshStandardMaterial({ color: 0xe8902a, metalness: 0.05, roughness: 0.38, emissive: 0x934e00, emissiveIntensity: 0.42 });
+  const matAdd   = new THREE.MeshStandardMaterial({ color: 0x16a35d, metalness: 0.05, roughness: 0.38, emissive: 0x065f33, emissiveIntensity: 0.46 });
+  const matDel   = new THREE.MeshStandardMaterial({ color: 0xd6392a, metalness: 0.05, roughness: 0.38, emissive: 0x7a160c, emissiveIntensity: 0.42 });
+  // frosted-glass shell — the "edit" look: body goes translucent so only the changes show
+  const matGhost = new THREE.MeshPhysicalMaterial({ color: 0xeef2f4, metalness: 0.0, roughness: 0.5, transmission: 0.88, thickness: 0.9, ior: 1.4, envMapIntensity: 1.2 });
+
+  const SHADOW_TEX = (function () {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const x = c.getContext('2d');
+    const g = x.createRadialGradient(64, 64, 4, 64, 64, 62);
+    g.addColorStop(0, 'rgba(34,44,50,0.5)'); g.addColorStop(0.55, 'rgba(34,44,50,0.18)'); g.addColorStop(1, 'rgba(34,44,50,0)');
+    x.fillStyle = g; x.beginPath(); x.arc(64, 64, 62, 0, Math.PI * 2); x.fill();
+    return new THREE.CanvasTexture(c);
+  })();
+
+  function makeViewer(host) {
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(host.clientWidth, host.clientHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    host.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+    const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(4, 6, 5); scene.add(key);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.5); rim.position.set(-5, 2, -4); scene.add(rim);
+    const camera = new THREE.PerspectiveCamera(34, host.clientWidth / host.clientHeight, 0.1, 100);
+    camera.position.set(3.5, 2.5, 4.6); camera.lookAt(0, 0, 0);
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 3.4), new THREE.MeshBasicMaterial({ map: SHADOW_TEX, transparent: true, depthWrite: false, opacity: 0.78 }));
+    shadow.rotation.x = -Math.PI / 2; shadow.position.y = -0.62; scene.add(shadow);
+    const part = new THREE.Group(); scene.add(part);
+    new ResizeObserver(() => { const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); }).observe(host);
+    return { renderer, scene, camera, part, host };
+  }
+  const addTo = (part, geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); part.add(m); return m; };
+
+  const vA = makeViewer(document.getElementById('hostA'));
+  const vC = makeViewer(document.getElementById('hostC'));
+
+  // Rev A — baseline, all grey
+  (function (g) {
+    addTo(g, box(2.5, 0.5, 1.7), matBase, 0, 0, 0);
+    addTo(g, box(2.5, 0.52, 0.12), matBase, 0, 0.37, 0.8);
+    addTo(g, box(2.5, 0.52, 0.12), matBase, 0, 0.37, -0.8);
+    addTo(g, box(0.12, 0.52, 1.7), matBase, 1.2, 0.37, 0);
+    addTo(g, box(0.12, 0.52, 1.7), matBase, -1.2, 0.37, 0);
+    [[0.9, 0.5], [-0.9, 0.5], [0.9, -0.5], [-0.9, -0.5]].forEach(p => addTo(g, cyl(0.15, 0.55), matBase, p[0], 0.32, p[1]));
+    addTo(g, cyl(0.13, 0.46), matBase, -0.72, 0.33, 0.62); // gate at the old (cosmetic) location
+  })(vA.part);
+
+  // Rev C — current, with highlights
+  const gC = vC.part;
+  const baseC = addTo(gC, box(2.5, 0.5, 1.7), matBase, 0, 0, 0);
+  const wallsC = [
+    addTo(gC, box(2.5, 0.46, 0.14), matMod, 0, 0.36, 0.78),
+    addTo(gC, box(2.5, 0.46, 0.14), matMod, 0, 0.36, -0.78),
+    addTo(gC, box(0.14, 0.46, 1.7), matMod, 1.18, 0.36, 0),
+    addTo(gC, box(0.14, 0.46, 1.7), matMod, -1.18, 0.36, 0),
+  ];
+  const bossesC = [[0.9, 0.5], [-0.9, 0.5], [0.9, -0.5], [-0.9, -0.5]].map(p => addTo(gC, cyl(0.15, 0.55), matBase, p[0], 0.32, p[1]));
+  const gateNewC = addTo(gC, cyl(0.13, 0.46), matAdd, 0.0, 0.33, 0.55);
+  const gateOldC = addTo(gC, cyl(0.13, 0.46), matDel, -0.72, 0.33, 0.62);
+  const reliefC = addTo(gC, box(0.34, 0.16, 0.34), matAdd, 0.62, 0.46, -0.18);
+  const bodyC = [baseC].concat(bossesC);
+
+  let diffOn = true, ghostOn = true, autoRotate = true;
+  function apply() {
+    bodyC.forEach(m => m.material = ghostOn ? matGhost : matBase);
+    wallsC.forEach(m => m.material = diffOn ? matMod : (ghostOn ? matGhost : matBase));
+    gateNewC.material = diffOn ? matAdd : (ghostOn ? matGhost : matBase);
+    reliefC.material = diffOn ? matAdd : (ghostOn ? matGhost : matBase);
+    gateOldC.visible = diffOn;
+  }
+  apply();
+  window.toggleDiff = () => { diffOn = !diffOn; apply(); document.getElementById('btnDiff').classList.toggle('on', diffOn); };
+  window.toggleGhost = () => { ghostOn = !ghostOn; apply(); document.getElementById('btnGhost').classList.toggle('on', ghostOn); };
+  window.toggleSpin = () => { autoRotate = !autoRotate; document.getElementById('btnSpin').classList.toggle('on', autoRotate); };
+
+  // shared rotation — drag either model, both stay in sync
+  let rotX = 0.12, rotY = -0.5, dragging = false;
+  [vA.host, vC.host].forEach(h => {
+    let px, py, down = false;
+    h.style.touchAction = 'none';
+    h.addEventListener('pointerdown', e => { down = true; dragging = true; px = e.clientX; py = e.clientY; try { h.setPointerCapture(e.pointerId); } catch (x) {} });
+    h.addEventListener('pointermove', e => { if (!down) return; rotY += (e.clientX - px) * 0.01; rotX += (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY; });
+    const up = () => { down = false; dragging = false; };
+    h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up); h.addEventListener('pointerleave', up);
+  });
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    if (autoRotate && !dragging) rotY += 0.006;
+    vA.part.rotation.set(rotX, rotY, 0);
+    vC.part.rotation.set(rotX, rotY, 0);
+    vA.renderer.render(vA.scene, vA.camera);
+    vC.renderer.render(vC.scene, vC.camera);
+  })();
+</script>
 <script src="switcher.js"></script>
 </body>
 </html>

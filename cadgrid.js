@@ -120,9 +120,10 @@ export function buildShape(kind, mat) {
 
   function addCell(canvas) {
     const stat = canvas.hasAttribute('data-cad-static');
+    const hold = canvas.hasAttribute('data-cad-hold');
     const holder = fit(buildShape(canvas.getAttribute('data-cad-shape') || 'enclosure'));
     const cell = {
-      canvas, ctx: canvas.getContext('2d'), holder, stat: stat, dirty: true,
+      canvas, ctx: canvas.getContext('2d'), holder, stat: stat, dirty: true, holding: false,
       rotX: stat ? 0.36 : 0.18, rotY: stat ? -0.62 : (cells.length * 1.1) % (Math.PI * 2),
       speed: stat ? 0 : 0.005 + (cells.length % 3) * 0.0014, visible: true, dragging: false, W: 2, H: 2
     };
@@ -141,6 +142,13 @@ export function buildShape(kind, mat) {
       canvas.addEventListener('pointermove', e => { if (!down) return; cell.rotY += (e.clientX - px) * 0.01; cell.rotX += (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY; cell.dirty = true; });
       const up = () => { down = false; cell.dragging = false; };
       canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up); canvas.addEventListener('pointerleave', up);
+    } else if (hold) {
+      // press-and-hold to spin
+      canvas.style.touchAction = 'none'; canvas.style.cursor = 'grab';
+      const start = e => { cell.holding = true; canvas.style.cursor = 'grabbing'; try { canvas.setPointerCapture(e.pointerId); } catch (x) {} };
+      const stop = () => { cell.holding = false; canvas.style.cursor = 'grab'; };
+      canvas.addEventListener('pointerdown', start);
+      canvas.addEventListener('pointerup', stop); canvas.addEventListener('pointercancel', stop); canvas.addEventListener('pointerleave', stop);
     }
     cells.push(cell);
   }
@@ -150,7 +158,8 @@ export function buildShape(kind, mat) {
     if (!renderer) return;
     for (const c of cells) {
       if (!c.visible || !c.W) continue;
-      if (!c.stat && !c.dragging) { c.rotY += c.speed; c.dirty = true; }
+      if (c.holding) { c.rotY += 0.006; c.dirty = true; }
+      else if (!c.stat && !c.dragging) { c.rotY += c.speed; c.dirty = true; }
       if (!c.dirty) continue;
       if (c.W !== curW || c.H !== curH) { renderer.setSize(c.W, c.H, false); camera.aspect = c.W / c.H; camera.updateProjectionMatrix(); curW = c.W; curH = c.H; }
       slot.clear(); slot.add(c.holder);
