@@ -119,26 +119,29 @@ export function buildShape(kind, mat) {
   }
 
   function addCell(canvas) {
+    const stat = canvas.hasAttribute('data-cad-static');
     const holder = fit(buildShape(canvas.getAttribute('data-cad-shape') || 'enclosure'));
     const cell = {
-      canvas, ctx: canvas.getContext('2d'), holder,
-      rotX: 0.18, rotY: (cells.length * 1.1) % (Math.PI * 2),
-      speed: 0.005 + (cells.length % 3) * 0.0014, visible: true, dragging: false, W: 2, H: 2
+      canvas, ctx: canvas.getContext('2d'), holder, stat: stat, dirty: true,
+      rotX: stat ? 0.36 : 0.18, rotY: stat ? -0.62 : (cells.length * 1.1) % (Math.PI * 2),
+      speed: stat ? 0 : 0.005 + (cells.length % 3) * 0.0014, visible: true, dragging: false, W: 2, H: 2
     };
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     cell.size = function () {
       const r = canvas.getBoundingClientRect();
       cell.W = Math.max(2, Math.round(r.width * dpr));
       cell.H = Math.max(2, Math.round(r.height * dpr));
-      canvas.width = cell.W; canvas.height = cell.H;
+      canvas.width = cell.W; canvas.height = cell.H; cell.dirty = true;
     };
     cell.size();
-    canvas.style.touchAction = 'none';
-    let px, py, down = false;
-    canvas.addEventListener('pointerdown', e => { down = true; cell.dragging = true; px = e.clientX; py = e.clientY; try { canvas.setPointerCapture(e.pointerId); } catch (x) {} });
-    canvas.addEventListener('pointermove', e => { if (!down) return; cell.rotY += (e.clientX - px) * 0.01; cell.rotX += (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY; });
-    const up = () => { down = false; cell.dragging = false; };
-    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up); canvas.addEventListener('pointerleave', up);
+    if (!stat) {
+      canvas.style.touchAction = 'none';
+      let px, py, down = false;
+      canvas.addEventListener('pointerdown', e => { down = true; cell.dragging = true; px = e.clientX; py = e.clientY; try { canvas.setPointerCapture(e.pointerId); } catch (x) {} });
+      canvas.addEventListener('pointermove', e => { if (!down) return; cell.rotY += (e.clientX - px) * 0.01; cell.rotX += (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY; cell.dirty = true; });
+      const up = () => { down = false; cell.dragging = false; };
+      canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up); canvas.addEventListener('pointerleave', up);
+    }
     cells.push(cell);
   }
 
@@ -147,13 +150,15 @@ export function buildShape(kind, mat) {
     if (!renderer) return;
     for (const c of cells) {
       if (!c.visible || !c.W) continue;
-      if (!c.dragging) c.rotY += c.speed;
+      if (!c.stat && !c.dragging) { c.rotY += c.speed; c.dirty = true; }
+      if (!c.dirty) continue;
       if (c.W !== curW || c.H !== curH) { renderer.setSize(c.W, c.H, false); camera.aspect = c.W / c.H; camera.updateProjectionMatrix(); curW = c.W; curH = c.H; }
       slot.clear(); slot.add(c.holder);
       c.holder.rotation.set(c.rotX, c.rotY, 0);
       renderer.render(scene, camera);
       c.ctx.clearRect(0, 0, c.W, c.H);
       c.ctx.drawImage(renderer.domElement, 0, 0, c.W, c.H);
+      c.dirty = false;
     }
   }
 
@@ -164,7 +169,7 @@ export function buildShape(kind, mat) {
     canvases.forEach(addCell);
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => es.forEach(e => {
-        const c = cells.find(x => x.canvas === e.target); if (c) c.visible = e.isIntersecting;
+        const c = cells.find(x => x.canvas === e.target); if (c) { c.visible = e.isIntersecting; if (c.visible) c.dirty = true; }
       }), { rootMargin: '120px' });
       canvases.forEach(cv => io.observe(cv));
     }
