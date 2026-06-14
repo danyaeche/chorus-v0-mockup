@@ -24,9 +24,9 @@
   .cad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 14px; }
   .cad-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; cursor: pointer; text-decoration: none; color: inherit; display: block; transition: box-shadow .15s, transform .15s, border-color .15s; }
   .cad-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: #d7dcda; }
-  .cad-stage { position: relative; aspect-ratio: 4 / 3; background: radial-gradient(120% 120% at 50% 18%, #fbfcfc 0%, #eef1f1 58%, #e3e7e7 100%); border-bottom: 1px solid var(--line-2); }
-  .cad-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
-  .cad-stage canvas:active { cursor: grabbing; }
+  .cad-stage { position: relative; aspect-ratio: 4 / 3; background: #fff; border-bottom: 1px solid var(--line-2); overflow: hidden; }
+  .sheet-host { position: absolute; inset: 0; }
+  .sheet-host svg { width: 100%; height: 100%; display: block; }
   .cad-chip { position: absolute; top: 10px; font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,.82); color: var(--ink-2); }
   .cad-chip.l { left: 10px; } .cad-chip.r { right: 10px; color: var(--ink); }
   .cad-hint2 { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--muted-2); pointer-events: none; opacity: 0; transition: opacity .15s; }
@@ -70,42 +70,42 @@
     <div id="gridView">
     <div class="cad-grid">
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="enclosure"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev C</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"enclosure","title":"Battery enclosure — lower","number":"TM-4-2001","rev":"C","material":"PC-ABS","process":"Injection Mold","dims":{"w":"180.0","d":"120.0","h":"42.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev C</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Battery enclosure — lower</div><div class="pp">TM-4-2001 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi"><span class="d"></span>2 open</span><span class="badge badge--blue">DFM Active</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="enclosure"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"enclosure","title":"Battery enclosure — upper","number":"TM-4-2002","rev":"B","material":"PC-ABS","process":"Injection Mold","dims":{"w":"180.0","d":"120.0","h":"38.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Battery enclosure — upper</div><div class="pp">TM-4-2002 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi"><span class="d"></span>1 open</span><span class="badge" style="background:#f5ecd4;color:#b7791f">Awaiting validation</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="bezel"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev A</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"bezel","title":"Display bezel","number":"TM-4-2003","rev":"A","material":"PC","process":"Injection Mold","dims":{"w":"150.0","d":"92.0","h":"12.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev A</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Display bezel</div><div class="pp">TM-4-2003 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi hot"><span class="d"></span>3 open</span><span class="badge badge--red">Needs DFM response</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="housing"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"housing","title":"Controller housing","number":"TM-4-2004","rev":"B","material":"PC-ABS","process":"Injection Mold","dims":{"w":"96.0","d":"70.0","h":"40.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Controller housing</div><div class="pp">TM-4-2004 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi hot"><span class="d"></span>1 critical</span><span class="badge badge--blue">DFM Active</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="cap"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"cap","title":"Charge-port cap","number":"TM-4-2005","rev":"B","material":"TPU","process":"Injection Mold","dims":{"w":"28.0","d":"28.0","h":"14.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Charge-port cap</div><div class="pp">TM-4-2005 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi zero"><span class="d"></span>0 open</span><span class="badge badge--green">DFM Approved</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="lens"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev C</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"lens","title":"Light lens","number":"TM-4-2006","rev":"C","material":"PMMA","process":"Injection Mold","dims":{"w":"40.0","d":"40.0","h":"9.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev C</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Light lens</div><div class="pp">TM-4-2006 · TM-4 Bike Program</div></div>
         <div class="cad-foot"><span class="oi zero"><span class="d"></span>0 open</span><span class="badge badge--green">DFM Approved</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="frame"></canvas><span class="cad-chip l">Die Cast</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"frame","title":"Mainframe enclosure","number":"CE-2001","rev":"B","material":"ADC12","process":"Die Cast","dims":{"w":"320.0","d":"140.0","h":"60.0"}}'></div><span class="cad-chip l">Die Cast</span><span class="cad-chip r">Rev B</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Mainframe enclosure</div><div class="pp">CE-2001 · Cargo eBike</div></div>
         <div class="cad-foot"><span class="oi zero"><span class="d"></span>0 open</span><span class="badge badge--green">DFM Approved</span></div>
       </a>
       <a class="cad-card" href="part-detail.html">
-        <div class="cad-stage"><canvas class="cad-cell" data-cad-shape="tray"></canvas><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev A</span><span class="cad-hint2">drag to rotate</span></div>
+        <div class="cad-stage"><div class="sheet-host" data-sheet='{"shape":"tray","title":"Battery tray","number":"CE-2002","rev":"A","material":"PP","process":"Injection Mold","dims":{"w":"240.0","d":"160.0","h":"35.0"}}'></div><span class="cad-chip l">Injection Mold</span><span class="cad-chip r">Rev A</span><span class="cad-hint2">open drawing →</span></div>
         <div class="cad-meta"><div class="pn">Battery tray</div><div class="pp">CE-2002 · Cargo eBike</div></div>
         <div class="cad-foot"><span class="oi"><span class="d"></span>2 open</span><span class="badge badge--blue">DFM Active</span></div>
       </a>
@@ -154,7 +154,7 @@
       </div>
     </div>
 
-    <div class="tbl-foot" style="border:0;padding-top:14px"><span class="muted fs-13" id="partsFoot">8 of 27 parts · live CAD preview · drag any part to orbit</span><div class="pager"><span class="cur">1</span><a href="#">2</a><a href="#">3</a></div></div>
+    <div class="tbl-foot" style="border:0;padding-top:14px"><span class="muted fs-13" id="partsFoot">8 of 27 parts · 2D engineering drawing per part · click to open</span><div class="pager"><span class="cur">1</span><a href="#">2</a><a href="#">3</a></div></div>
   </main>
 </div>
 <script src="store.js"></script>
@@ -172,15 +172,11 @@
     if (bg) bg.classList.toggle('on', grid);
     if (bl) bl.classList.toggle('on', !grid);
     var foot = document.getElementById('partsFoot');
-    if (foot) foot.textContent = grid ? '8 of 27 parts · live CAD preview · drag any part to orbit' : '8 of 27 parts';
-    if (grid) window.dispatchEvent(new Event('resize')); // re-measure CAD cells
+    if (foot) foot.textContent = grid ? '8 of 27 parts · 2D engineering drawing per part · click to open' : '8 of 27 parts';
     try { localStorage.setItem('chorus.partsView', v); } catch (e) {}
   }
   (function(){ var v = 'grid'; try { v = localStorage.getItem('chorus.partsView') || 'grid'; } catch(e){} if (v === 'list') setView('list'); })();
 </script>
-<script type="importmap">
-{ "imports": { "three": "./vendor/three/build/three.module.js", "three/addons/": "./vendor/three/addons/" } }
-</script>
-<script type="module" src="cadgrid.js"></script>
+<script src="drawsheet.js"></script>
 </body>
 </html>
