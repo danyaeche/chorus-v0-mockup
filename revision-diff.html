@@ -50,7 +50,7 @@
   .di:hover { background: #fafafa; }
   .di-badge { font-size: 10px; font-weight: 700; letter-spacing: .03em; padding: 2px 6px; border-radius: 4px; flex: none; margin-top: 1px; height: fit-content; }
   .di-badge.mod { background: #f6ecd6; color: #b5751c; }
-  .di-badge.add { background: var(--green-50); color: var(--green-600t); }
+  .di-badge.add { background: var(--blue-50); color: var(--blue-600); }
   .di-badge.del { background: var(--red-50); color: var(--red-600); }
   .di .grow { flex: 1; min-width: 0; }
   .di .t { font-size: 13px; font-weight: 500; }
@@ -97,7 +97,7 @@
         <div class="viewer"><div id="hostC" class="host"></div>
           <div class="legend">
             <div class="lg"><span class="sw" style="background:#e0973a"></span>Modified</div>
-            <div class="lg"><span class="sw" style="background:#1f9d62"></span>Added in Rev C</div>
+            <div class="lg"><span class="sw" style="background:#2f74d6"></span>Added in Rev C</div>
             <div class="lg"><span class="sw" style="background:#c0392b"></span>Removed (Rev A)</div>
           </div>
         </div>
@@ -162,7 +162,7 @@
   // shared materials
   const matBase  = new THREE.MeshStandardMaterial({ color: 0xbcc2c6, metalness: 0.16, roughness: 0.55 });
   const matMod   = new THREE.MeshStandardMaterial({ color: 0xe8902a, metalness: 0.05, roughness: 0.38, emissive: 0x934e00, emissiveIntensity: 0.42 });
-  const matAdd   = new THREE.MeshStandardMaterial({ color: 0x16a35d, metalness: 0.05, roughness: 0.38, emissive: 0x065f33, emissiveIntensity: 0.46 });
+  const matAdd   = new THREE.MeshStandardMaterial({ color: 0x2f74d6, metalness: 0.05, roughness: 0.38, emissive: 0x06224a, emissiveIntensity: 0.5 });
   const matDel   = new THREE.MeshStandardMaterial({ color: 0xd6392a, metalness: 0.05, roughness: 0.38, emissive: 0x7a160c, emissiveIntensity: 0.42 });
   // frosted-glass shell — the "edit" look: body goes translucent so only the changes show
   const matGhost = new THREE.MeshPhysicalMaterial({ color: 0xeef2f4, metalness: 0.0, roughness: 0.5, transmission: 0.88, thickness: 0.9, ior: 1.4, envMapIntensity: 1.2 });
