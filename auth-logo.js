@@ -1,5 +1,5 @@
-// Auth hero — a clean latitude/longitude wireframe globe, slowly rotating,
-// with a few satellites orbiting on thin tilted rings. White lines on the dark panel.
+// Auth hero (sign-in) — a globe built from latitude rings drawn as dashes of varying
+// length, slowly rotating, tilted to echo the chorus logo. White lines on the dark panel.
 import * as THREE from 'three';
 
 const host = document.getElementById('authHero');
@@ -17,38 +17,34 @@ if (host) {
   const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(4, 5, 6); scene.add(key);
 
   const world = new THREE.Group();
-  world.position.y = 0.6;
-  world.rotation.z = 0.18;
+  world.position.y = 1.15;
+  world.rotation.z = -0.5;   // tilt to echo the chorus logo
   scene.add(world);
 
   const R = 2.05;
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.30 });
+  const sp = (lat, lon) => new THREE.Vector3(R * Math.cos(lat) * Math.cos(lon), R * Math.sin(lat), R * Math.cos(lat) * Math.sin(lon));
+  const ringMat = new THREE.LineBasicMaterial({ color: 0xeef2f2, transparent: true, opacity: 0.62, blending: THREE.AdditiveBlending, depthWrite: false });
 
-  // ---- Wireframe globe ----
+  // ---- Globe built from latitude rings, drawn as dashes of varying length ----
   const globe = new THREE.Group();
-  // longitudes (meridians)
-  const MERIDIANS = 16;
-  for (let i = 0; i < MERIDIANS; i++) {
-    const c = new THREE.EllipseCurve(0, 0, R, R, 0, Math.PI * 2);
-    const pts = c.getPoints(120).map(p => new THREE.Vector3(p.x, p.y, 0));
-    const l = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat);
-    l.rotation.y = (i / MERIDIANS) * Math.PI;
-    globe.add(l);
-  }
-  // latitudes (parallels)
-  const PARALLELS = 11;
-  for (let j = 1; j < PARALLELS; j++) {
-    const lat = (j / PARALLELS) * Math.PI - Math.PI / 2;
-    const r = Math.cos(lat) * R, y = Math.sin(lat) * R;
-    const c = new THREE.EllipseCurve(0, 0, r, r, 0, Math.PI * 2);
-    const pts = c.getPoints(120).map(p => new THREE.Vector3(p.x, y, p.y));
-    globe.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
-  }
-  // faint dark core so front lines read brighter than the back
-  globe.add(new THREE.Mesh(
-    new THREE.SphereGeometry(R * 0.99, 48, 32),
-    new THREE.MeshBasicMaterial({ color: 0x0c0c0c, transparent: true, opacity: 0.78 })
-  ));
+  (() => {
+    const verts = [], LATS = 30;
+    for (let l = 0; l < LATS; l++) {
+      const lat = (l / (LATS - 1) - 0.5) * Math.PI * 0.94;
+      let ang = Math.random() * 0.6;
+      while (ang < Math.PI * 2) {
+        const len = 0.06 + Math.random() * 0.18, a2 = Math.min(Math.PI * 2, ang + len), k = 6;
+        for (let s = 0; s < k; s++) {
+          const p1 = sp(lat, ang + (a2 - ang) * s / k), p2 = sp(lat, ang + (a2 - ang) * (s + 1) / k);
+          verts.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+        }
+        ang = a2 + 0.045 + Math.random() * 0.06;
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts), 3));
+    globe.add(new THREE.LineSegments(g, ringMat));
+  })();
   world.add(globe);
 
   // ---- Signal arcs: bigger/longer/slower trails that emanate, bow high & return (same as signup) ----
@@ -91,7 +87,7 @@ if (host) {
     setup(); o.respawn = setup;
     return o;
   }
-  const arcs = Array.from({ length: 8 }, makeArc);
+  const arcs = [];   // satellites removed — globe only
 
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;

@@ -179,7 +179,7 @@ if (host) {
     geo.setAttribute('alpha', new THREE.BufferAttribute(alpha, 1));
     dots = new THREE.Points(geo, dotMat);
     world.add(dots);
-    for (let i = 0; i < 6; i++) arcs.push(makeArc());
+    // satellites (signal arcs + ring nodes) removed — globe only
   }
 
   // ---- colored signal arcs + ring nodes ----
@@ -253,7 +253,7 @@ if (host) {
     requestAnimationFrame(animate);
     const now = performance.now(), dt = Math.min(0.05, (now - last) / 1000); last = now;
     if (dots) {
-      dots.rotation.y += 0.0022;
+      dots.rotation.y += 0.0013;
       if ((frame++ % 2) === 0) {
         const q = dots.quaternion, arr = geo.getAttribute('alpha').array;
         for (let i = 0; i < COUNT; i++) {
