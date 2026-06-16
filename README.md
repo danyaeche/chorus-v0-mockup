@@ -15,16 +15,20 @@ Chorus replaces the **CAD → PowerPoint → email** loop that DFM review usuall
 
 ## The model
 
-**Hierarchy** — a part can be DFM'd by several providers at once, each in its own confidential review.
+**Hierarchy** — a **part design is reusable**: it lives in the workspace and can be referenced by many projects. The **DFM process belongs to each (part × project) membership**, not to the part — so the same part runs a *separate, independent DFM* in every project it's used in, each able to host several parallel provider reviews.
 
 ```
-Workspace → Project → Part ─┬─ Package        gate: must be Complete before reviewers can be invited
-                            ├─ Revisions      shared design — every provider reviews these
-                            ├─ DFMs           one per provider · parallel · walled off from each other
-                            │     └─ Issue (typed) → Disposition → Implemented → Validated → Closed
-                            ├─ Issue Groups   brand rolls up the same issue across providers (+ conflict flag)
-                            ├─ Sign-offs      parting line · gate · material lock · tooling (joint, signed)
-                            └─ DFM Approval    the terminal gate — freeze the revision, cut steel
+Workspace
+├─ Part (design)              reusable — number · geometry · material · process
+│                             the SAME design can be referenced by many projects
+└─ Project
+   └─ Part-in-Project ──┬─ Package        gate: must be Complete before reviewers can be invited
+      the DFM process;  ├─ Revisions      shared design — every provider reviews these
+      one per           ├─ DFMs           one per provider · parallel · walled off from each other
+      (part × project)  │     └─ Issue (typed) → Disposition → Implemented → Validated → Closed
+                        ├─ Issue Groups   brand rolls up the same issue across providers (+ conflict flag)
+                        ├─ Sign-offs      parting line · gate · material lock · tooling (joint, signed)
+                        └─ DFM Approval    the terminal gate — freeze the revision, cut steel
 ```
 
 **The six fixes (v2)** that shape the model:
@@ -68,10 +72,10 @@ DFM rolled up across every program: open issues, awaiting validation, dispositio
 ![Dashboard](screenshots/dashboard.png)
 
 ### Parts — a live CAD gallery
-A **static 3D model per part** (press-and-hold a card to spin it); **hover** any model to pop its **2D engineering drawing** near the cursor. **List / Grid** toggle; the list rows carry the same static 3D thumbnails.
+A **static 3D model per part** (press-and-hold a card to spin it); **hover** any model to pop its **2D engineering drawing** near the cursor. **List / Grid** toggle; the list rows carry the same static 3D thumbnails. Shared designs are tagged with the **other projects** they're used in, and filtering by project surfaces a part under *every* program it belongs to.
 
 ### Part Detail
-Package **completeness gate**, the v2 **Part State** strip, **per-provider DFM reviews** (each at its own revision pointer), **Sign-offs** (Proposed → Aligned → Signed), and a **DFM Approval** gate. The Package panel has a **3D viewer** *and* a **2D toggle** — a generated engineering drawing (with the Chorus title-block stamp) that re-renders to the selected revision. Each revision row has its own live 3D mini.
+A **project switcher** in the breadcrumb — because a shared part runs an **independent DFM process per project**, switching project swaps the whole context: Part State, providers, issues, sign-offs, and approval (e.g. *Battery enclosure — lower* is `DFM Active` with two providers in **TM-4 Bike Program**, and a younger single-provider review in **Cargo eBike**). Within a project, a **provider switcher** flips between each DFM. Plus the Package **completeness gate**, the v2 **Part State** strip, **per-provider DFM reviews** (each at its own revision pointer), **Sign-offs** (Proposed → Aligned → Signed), and a **DFM Approval** gate. The Package panel has a **3D viewer** *and* a **2D toggle** — a generated engineering drawing (with the Chorus title-block stamp) that re-renders to the selected revision. Each revision row has its own live 3D mini.
 
 ![Part detail](screenshots/part-detail.png)
 
@@ -104,6 +108,7 @@ The v2 object hierarchy, the derived issue state machine, the 11-step flow, and 
 - **`cadgrid.js`** — a shared-renderer CAD gallery: **one WebGL context blitted to many 2D canvases**, so a grid of models scales past the browser's context limit. Supports static (render-once) and press-and-hold-to-spin cells.
 - **`drawsheet.js`** — generates **engineering drawing sheets** (crop marks, ortho + isometric views, dimension fans, notes, and a **Chorus title-block stamp**) from a small part spec.
 - **Pure CSS/SVG charts** — donut, bars, progress (no chart library).
+- **`model.js`** — the canonical worked-example data model: a workspace **part library** + projects + **(part × project) memberships**, each membership carrying its own DFM process. Part-detail, parts-list, and project-detail render from it, which is what makes the shared-part / per-project-DFM behaviour consistent across screens.
 - **`localStorage`** store (`store.js`) so created projects/parts/links persist as you navigate; **`cadstore.js`** (IndexedDB) hands off uploaded CAD to the viewer.
 - Shared **`sidebar.js`** (nav + workspace switcher) and **`switcher.js`** (a dev-only screen jumper; append `#noswitch` to any URL to hide it).
 - The sign-in / sign-up heroes are **Three.js line-globes** (`auth-logo.js`, `auth-globe-signup.js`); the sign-in globe re-permutes its lines on every refresh.
@@ -136,6 +141,7 @@ team.html | magic-links.html | settings.html | create-project.html
 user-flow.html ........ Workflow tree + derived state machine + the six fixes
 login.html | signup.html ... auth, with the line-globe heroes
 
+model.js .............. canonical data model — part library + (part × project) DFM memberships
 cadgrid.js ............ shared-renderer CAD gallery (one WebGL context → many canvases)
 drawsheet.js .......... engineering 2D drawing-sheet generator (+ Chorus stamp)
 cadstore.js ........... IndexedDB handoff for uploaded CAD

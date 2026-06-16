@@ -141,11 +141,15 @@
     <h2><span class="n">2</span> Object hierarchy</h2>
     <div class="tree">
 <pre><span class="t-ws">Workspace / Organization</span>
-<span class="t-br">└──</span> <span class="t-pr">Project</span>  <span class="t-note">(TM-4 Bike Program · rolls up parts &amp; DFMs across providers)</span>
+<span class="t-br">├──</span> <span class="t-atom">Part Library</span>  <span class="t-note">◆ reusable designs — a Part lives here, independent of any project</span>
+<span class="t-br">│   └──</span> <span class="t-node">Part</span>  <span class="t-note">(Battery enclosure — lower · TM-4-2001)</span>
+<span class="t-br">│       ├──</span> <span class="t-mut">Design Metadata</span>  <span class="t-mut">number · geometry · material · process · cosmetic grade · owner</span>
+<span class="t-br">│       └──</span> <span class="t-mut">Used in</span>  <span class="t-note">◆ TM-4 Bike Program · Cargo eBike — the SAME design, referenced by many projects</span>
+<span class="t-br">│</span>
+<span class="t-br">└──</span> <span class="t-pr">Project</span>  <span class="t-note">(TM-4 Bike Program · references parts from the library)</span>
     <span class="t-br">├──</span> <span class="t-node">Project Metadata</span>  <span class="t-mut">name · product · brand &amp; engineering owner · status</span>
     <span class="t-br">│</span>
-    <span class="t-br">├──</span> <span class="t-node">Part</span>  <span class="t-note">(Battery enclosure — lower · Injection Mold)</span>
-    <span class="t-br">│   ├──</span> <span class="t-node">Part Metadata</span>  <span class="t-mut">number · material · process · owner · state · Current Released Revision ◆</span>
+    <span class="t-br">├──</span> <span class="t-atom">Part-in-Project</span>  <span class="t-note">◀── the DFM PROCESS · one per (part × project) · same part elsewhere = a SEPARATE, independent DFM</span>
     <span class="t-br">│   ├──</span> <span class="t-node">Package</span>  <span class="t-note">◆ completeness ENFORCED</span>
     <span class="t-br">│   │   ├──</span> <span class="t-mut">Required Items</span>  <span class="t-mut">◆ template by process — STEP · 2D+GD&amp;T · material spec · cosmetic grades · volume · regulatory</span>
     <span class="t-br">│   │   └──</span> <span class="t-mut">Package State</span>  <span class="t-note">Incomplete → Complete  ◆ GATE: no reviewer invite until Complete</span>
@@ -168,7 +172,7 @@
     <span class="t-br">│   │   └──</span> <span class="t-mut">Sign-off</span>  <span class="t-mut">parting line · gate · material lock · tooling · both parties confirm · Proposed → Aligned → Signed</span>
     <span class="t-br">│   ├──</span> <span class="t-atom">DFM Approval</span>  <span class="t-note">◆ NEW · the gate that matters — cut steel</span>
     <span class="t-br">│   │   └──</span> <span class="t-mut">entry: all issues dispositioned + sign-offs signed · approved revision frozen · PO/tooling ref</span>
-    <span class="t-br">│   ├──</span> <span class="t-node">Part State</span>  <span class="t-mut">Draft → Package Complete ◆ → DFM Active → Awaiting Validation → DFM Approved ◆</span>
+    <span class="t-br">│   ├──</span> <span class="t-node">Part State</span>  <span class="t-mut">Draft → Package Complete ◆ → DFM Active → Awaiting Validation → DFM Approved ◆ · per (part × project)</span>
     <span class="t-br">│   └──</span> <span class="t-node">Activity</span>  <span class="t-mut">revision · issue · decision · validation · Sign-off recorded ◆ · DFM Approved ◆</span>
     <span class="t-br">│</span>
     <span class="t-br">├──</span> <span class="t-node">External Reviewers</span>  <span class="t-mut">company · role · NDA status ◆ (gate before files) · access scope · magic link (expiry · revoke · watermark ◆) · activity log ◆</span>

@@ -64,7 +64,8 @@
   .cad-toggle button.on { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
   .cad2d { aspect-ratio: 4 / 3; background: #fff; border-top: 1px solid var(--line-2); position: relative; }
   .cad2d svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .file-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); background: #f1f3f3; border-radius: 6px; padding: 4px 9px; }
+  .file-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); background: #f1f3f3; border-radius: 6px; padding: 4px 9px; cursor: pointer; transition: background .12s, opacity .12s; }
+  .file-chip:hover { background: #e6eae9; }
 
   .disc-head .ctx { font-size: 11.5px; color: var(--muted); }
   .issue { border-bottom: 1px solid var(--line-2); padding: 13px 16px; }
@@ -213,7 +214,7 @@
   <div class="detail">
     <div class="crumbs">
       <a href="projects.html">Projects</a><span class="sep">/</span>
-      <a href="project-detail.html?p=TM-4%20Bike%20Program">TM-4 Bike Program</a><span class="sep">/</span>
+      <button type="button" id="projChip" class="rev-chip" title="Switch project — this part runs an independent DFM in each" style="border:0;cursor:pointer;font:inherit;font-weight:600;color:var(--ink)">TM-4 Bike Program <span class="cv"></span></button><span class="sep">/</span>
       <span style="color:var(--ink);font-weight:500">Battery enclosure — lower</span>
       <span style="margin-left:auto;display:flex;gap:10px">
         <a class="btn btn--sm" href="revision-diff.html">Compare revisions</a>
@@ -222,15 +223,20 @@
       </span>
     </div>
 
+    <div id="scopeBanner" class="pkg-gate" style="background:#eef4fb;border-color:#d6e4f5;margin-bottom:14px">
+      <span class="pg-badge ok" style="background:var(--blue-50);color:var(--blue-600)">Shared part</span>
+      <span class="pg-txt">This design (<b>TM-4-2001</b>) is used in <b id="scopeCount">2 projects</b> — each runs its <b>own independent DFM process</b>. Showing <b id="scopeProj">TM-4 Bike Program</b>.<span id="scopeOther"></span></span>
+    </div>
+
     <div class="detail-head">
       <div>
-        <h1>Battery enclosure — lower <span class="badge badge--blue">DFM Active</span></h1>
-        <div class="sub">TM-4-2001 · Injection Mold · PC-ABS · 50,000 / yr · TM-4 Bike Program</div>
+        <h1>Battery enclosure — lower <span class="badge badge--blue" id="hdrState">DFM Active</span></h1>
+        <div class="sub" id="partSub">TM-4-2001 · Injection Mold · PC-ABS · 50,000 / yr · TM-4 Bike Program</div>
       </div>
     </div>
 
     <!-- Part State (v2) -->
-    <div class="pstate">
+    <div class="pstate" id="pstate">
       <span class="ps done">Draft</span><span class="psar">→</span>
       <span class="ps done">Package Complete</span><span class="psar">→</span>
       <span class="ps now">DFM Active</span><span class="psar">→</span>
@@ -248,16 +254,16 @@
     <!-- Part metadata + DFM-complete logic -->
     <div class="pd-row">
       <div class="panel">
-        <div class="panel-head"><h3>Part details</h3><span class="muted fs-12">TM-4-2001 · Rev C</span></div>
+        <div class="panel-head"><h3>Part details</h3><span class="muted fs-12" id="mPartRev">TM-4-2001 · Rev C</span></div>
         <div class="meta-grid">
           <div class="mc"><div class="mk">Part number</div><div class="mv">TM-4-2001</div></div>
           <div class="mc"><div class="mk">Material</div><div class="mv">PC-ABS (Cycoloy)</div></div>
           <div class="mc"><div class="mk">Process</div><div class="mv">Injection Mold</div></div>
           <div class="mc"><div class="mk">Cosmetic grade</div><div class="mv">Class A · visible</div></div>
-          <div class="mc"><div class="mk">Volume forecast</div><div class="mv">50,000 / yr</div></div>
+          <div class="mc"><div class="mk">Volume forecast</div><div class="mv" id="mVol">50,000 / yr</div></div>
           <div class="mc"><div class="mk">Owner</div><div class="mv">Mathieu Kury · ALSO</div></div>
-          <div class="mc"><div class="mk">DFMs</div><div class="mv">2 · Hsinchu · Shenzhen</div></div>
-          <div class="mc"><div class="mk">Status</div><div class="mv">DFM Active</div></div>
+          <div class="mc"><div class="mk">DFMs</div><div class="mv" id="mDfms">2 · Hsinchu · Shenzhen</div></div>
+          <div class="mc"><div class="mk">Status</div><div class="mv" id="mStatus">DFM Active</div></div>
         </div>
         <div class="meta-foot">
           <span class="mk">Description</span> Lower battery-enclosure housing for the TM-4 down-tube pack — Class A visible faces, snap-fits to the upper shell.
@@ -266,8 +272,8 @@
       </div>
 
       <div class="panel">
-        <div class="panel-head"><div class="ck-head"><h3>DFM Approval readiness</h3></div><span class="ck-prog">3 of 6</span></div>
-        <div class="ck">
+        <div class="panel-head"><div class="ck-head"><h3>DFM Approval readiness</h3></div><span class="ck-prog" id="ckProg">3 of 6</span></div>
+        <div class="ck" id="ckBody">
           <div class="ckrow"><span class="ci bad">2</span>2 issues still open (#14, #13) — need disposition or fix</div>
           <div class="ckrow done"><span class="ci">✓</span>No show-stoppers open</div>
           <div class="ckrow"><span class="ci bad">1</span>1 issue awaiting validation (#12)</div>
@@ -298,11 +304,11 @@
             <canvas class="cad-cell rev-mini" data-cad-shape="enclosure" title="Rev A package"></canvas>
           </a>
         </div>
-        <div class="tree-foot"><a href="part-detail.html">+ Upload Rev D</a></div>
+        <div class="tree-foot"><a href="#" onclick="document.getElementById('cadFile').click();return false">+ Upload Rev D</a></div>
       </div>
 
       <!-- Files / CAD preview for the selected revision -->
-      <div class="panel">
+      <div class="panel" id="package" style="scroll-margin-top:80px">
         <div class="panel-head">
           <div style="display:flex;align-items:center;gap:10px"><h3 id="pkgTitle">Package — Rev C</h3><span class="rev-chip" id="pkgRevChip">Rev C <span class="cv"></span></span></div>
           <div class="cad-toggle"><button id="m3d" class="on" onclick="setCadMode('3d')">3D</button><button id="m2d" onclick="setCadMode('2d')">2D</button></div>
@@ -337,56 +343,25 @@
       <!-- DFM Issues — the atomic unit of work -->
       <div class="panel">
         <div class="panel-head disc-head">
-          <div style="display:flex;align-items:center;gap:8px"><h3>DFM Issues</h3><span class="rev-chip" title="Switch DFM / provider">Hsinchu Precision <span class="cv"></span></span></div>
-          <span class="ctx">2 open · 1 awaiting</span>
+          <div style="display:flex;align-items:center;gap:8px"><h3>DFM Issues</h3><button type="button" id="provChip" class="rev-chip" title="Switch DFM / provider" style="border:0;cursor:pointer;font:inherit;font-weight:600">Hsinchu Precision <span class="cv"></span></button></div>
+          <span class="ctx" id="provCtx">2 open · 1 awaiting</span>
         </div>
-        <a class="irow" href="issue-detail.html">
-          <div class="irow-t"><span class="ino">#14</span><span class="ititle">Ejector pins mark Class A face</span><span class="ist open">Open</span></div>
-          <div class="irow-s"><span class="isev med"><span class="d"></span>Medium</span><span class="cat">Process</span><span>Benjamin Chen · Rev C</span></div>
-        </a>
-        <a class="irow" href="issue-detail.html">
-          <div class="irow-t"><span class="ino">#13</span><span class="ititle">Rib-to-wall ratio causes sink</span><span class="ist open">Open</span></div>
-          <div class="irow-s"><span class="isev low"><span class="d"></span>Low</span><span class="cat">Geometry</span><span>Benjamin Chen · Rev C</span></div>
-        </a>
-        <a class="irow" href="issue-detail.html">
-          <div class="irow-t"><span class="ino">#12</span><span class="ititle">Insufficient draft for ejection</span><span class="ist await">Awaiting validation</span></div>
-          <div class="irow-s"><span class="isev high"><span class="d"></span>High</span><span class="cat">Tooling</span><span>accepted · fixed in Rev C</span></div>
-        </a>
-        <a class="irow closed" href="issue-detail.html">
-          <div class="irow-t"><span class="ino">#7</span><span class="ititle">Gate witness on cosmetic face</span><span class="ist closed">Closed</span></div>
-          <div class="irow-s"><span class="isev med"><span class="d"></span>Medium</span><span class="cat">Tooling</span><span>validated · Rev B</span></div>
-        </a>
-        <div class="irow-foot"><a href="issues-list.html">View all 7 issues →</a><button class="btn btn--sm" onclick="openInvite()">+ New issue</button></div>
+        <div id="dfmIssuesBody"></div>
+        <div class="irow-foot"><a id="provAll" href="issues-list.html">View all 7 issues →</a><button class="btn btn--sm" onclick="openInvite()">+ New issue</button></div>
       </div>
     </div>
 
     <!-- DFM reviews — one per provider, in parallel -->
     <div class="panel" style="margin-bottom:16px">
-      <div class="panel-head"><h3>DFM reviews</h3><span class="muted fs-12">2 providers · in parallel · each NDA-gated, scoped, and at its own revision pointer</span></div>
-      <div class="dfm-rev sel">
-        <span class="cm-logo">HP</span>
-        <div class="dr-main">
-          <div class="dr-nm">Hsinchu Precision <span class="badge badge--soft" style="height:18px;font-size:11px">CM</span> <span class="badge badge--blue" style="height:18px;font-size:11px">DFM Active</span> <span class="dr-rev">reviewing Rev C</span></div>
-          <div class="dr-sub">benjamin.chen@hsinchu-precision.com · NDA on file · link active · scoped to this DFM · expires May 30</div>
-        </div>
-        <span class="dr-open">● 2 open</span>
-        <a class="btn btn--sm" href="magic-link-view.html">Open reviewer view</a>
-      </div>
-      <div class="dfm-rev">
-        <span class="cm-logo" style="background:#2f73c4">SO</span>
-        <div class="dr-main">
-          <div class="dr-nm">Shenzhen Optics <span class="badge badge--soft" style="height:18px;font-size:11px">Supplier</span> <span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">Awaiting validation</span> <span class="dr-rev">reviewing Rev B</span></div>
-          <div class="dr-sub">sora@shenzhen-optics.com · NDA on file · link active · scoped to this DFM · expires Jun 4 · one revision behind — different tooling, different findings</div>
-        </div>
-        <span class="dr-open">● 1 open</span>
-        <a class="btn btn--sm" href="magic-link-view.html">Open reviewer view</a>
-      </div>
+      <div class="panel-head"><h3>DFM reviews</h3><span class="muted fs-12" id="dfmRevSub">2 providers · in parallel · each NDA-gated, scoped, and at its own revision pointer</span></div>
+      <div id="dfmReviews"></div>
       <div class="dfm-rev-foot"><button class="btn btn--sm" onclick="openInvite()">+ Invite another provider</button><span class="muted fs-12">a part can be DFM'd by several providers at once — each gets its own scoped DFM, the parties never see each other</span></div>
     </div>
 
     <!-- Sign-offs (joint alignments) -->
     <div class="panel" style="margin-bottom:16px">
       <div class="panel-head"><h3>Sign-offs</h3><span class="muted fs-12">joint agreements between named parties — not issues one side "accepts"</span></div>
+      <div id="signoffBody">
       <div class="so-row">
         <span class="so-ic">⎯</span>
         <div class="so-main"><div class="so-t">Parting line</div><div class="so-sub">ALSO ⇄ Hsinchu Precision · agreed along the mid-flange split · Apr 22</div></div>
@@ -407,6 +382,7 @@
         <div class="so-main"><div class="so-t">Tooling plan</div><div class="so-sub">ALSO ⇄ Hsinchu Precision · single-cavity P20 prototype tool · aligned, pending final sign</div></div>
         <span class="so-st aligned">◐ Aligned</span>
       </div>
+      </div>
       <div class="dfm-rev-foot"><button class="btn btn--sm">+ Propose a sign-off</button><span class="muted fs-12">Proposed → Aligned → Signed · both parties confirm before the part can be approved</span></div>
     </div>
 
@@ -415,10 +391,10 @@
       <span class="appr-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6.5v5c0 4.5 3.2 7.8 8 9.5 4.8-1.7 8-5 8-9.5v-5L12 3Z" stroke="#b7791f" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#b7791f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <div class="appr-main">
         <div class="appr-t">DFM Approval — cut steel <span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">Locked</span></div>
-        <div class="appr-sub">The terminal gate. It opens when <b style="color:var(--ink)">every issue is dispositioned</b>, <b style="color:var(--ink)">all sign-offs are signed</b>, and the approved revision is frozen — then steel can be cut. Right now: 2 issues open · 1 sign-off pending.</div>
+        <div class="appr-sub" id="apprSub">The terminal gate. It opens when <b style="color:var(--ink)">every issue is dispositioned</b>, <b style="color:var(--ink)">all sign-offs are signed</b>, and the approved revision is frozen — then steel can be cut. Right now: 2 issues open · 1 sign-off pending.</div>
       </div>
-      <span class="appr-lock">3 items remaining</span>
-      <button class="btn" disabled style="opacity:.55;cursor:not-allowed">Approve &amp; freeze Rev C</button>
+      <span class="appr-lock" id="apprLock">3 items remaining</span>
+      <button class="btn" id="apprBtn" disabled style="opacity:.55;cursor:not-allowed">Approve &amp; freeze Rev C</button>
     </div>
 
     <!-- Activity log -->
@@ -679,5 +655,156 @@
   (function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); })();
 </script>
 <script src="switcher.js"></script>
+<script src="model.js"></script>
+<script>
+  // This part runs an INDEPENDENT DFM process per project. #projChip (breadcrumb)
+  // switches project and swaps the whole DFM context; #provChip switches provider
+  // within the current project's DFM. Everything is rendered from model.js.
+  (function () {
+    var M = window.ChorusModel;
+    var projChip = document.getElementById('projChip');
+    if (!M || !projChip) return;
+    var PART = 'TM-4-2001';
+    var memberships = M.membershipsForPart(PART);
+    var PART_INFO = M.partByNumber(PART) || { material: 'PC-ABS', process: 'Injection Mold' };
+    var signoffSnapshot = (document.getElementById('signoffBody') || {}).innerHTML || '';
+    var ckSnapshot = (document.getElementById('ckBody') || {}).innerHTML || '';
+    var ckProgSnap = (document.getElementById('ckProg') || {}).textContent || '';
+    var els = {};
+    ['scopeProj','scopeCount','scopeOther','hdrState','partSub','pstate','pkgTitle','mVol','mDfms','mStatus',
+     'dfmReviews','dfmRevSub','provChip','provCtx','provAll','dfmIssuesBody','signoffBody','apprSub','apprLock','apprBtn','ckBody','ckProg','mPartRev']
+      .forEach(function (id) { els[id] = document.getElementById(id); });
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+    function irow(iss) {
+      return '<a class="irow' + (iss.closed ? ' closed' : '') + '" href="issue-detail.html">'
+        + '<div class="irow-t"><span class="ino">' + iss.no + '</span><span class="ititle">' + esc(iss.title) + '</span><span class="ist ' + iss.sc + '">' + iss.st + '</span></div>'
+        + '<div class="irow-s"><span class="isev ' + iss.sv + '"><span class="d"></span>' + iss.sev + '</span><span class="cat">' + iss.cat + '</span><span>' + esc(iss.meta) + '</span></div>'
+        + '</a>';
+    }
+    function revRow(p, i) {
+      var stBadge = /awaiting/i.test(p.dfmState)
+        ? '<span class="badge" style="height:18px;font-size:11px;background:#f5ecd4;color:#b7791f">' + p.dfmState + '</span>'
+        : '<span class="badge ' + (p.stateClass || 'badge--blue') + '" style="height:18px;font-size:11px">' + p.dfmState + '</span>';
+      return '<div class="dfm-rev' + (i === 0 ? ' sel' : '') + '">'
+        + '<span class="cm-logo"' + (p.logoBg ? ' style="background:' + p.logoBg + '"' : '') + '>' + p.logo + '</span>'
+        + '<div class="dr-main"><div class="dr-nm">' + p.name + ' <span class="badge badge--soft" style="height:18px;font-size:11px">' + p.role + '</span> ' + stBadge + ' <span class="dr-rev">reviewing ' + p.rev + '</span></div>'
+        + '<div class="dr-sub">' + p.email + ' · NDA on file · link active · scoped to this DFM</div></div>'
+        + '<span class="dr-open">● ' + p.open + '</span>'
+        + '<a class="btn btn--sm" href="magic-link-view.html">Open reviewer view</a></div>';
+    }
+    function pstateHtml(state) {
+      var steps = ['Draft', 'Package Complete', 'DFM Active', 'Awaiting Validation', 'DFM Approved'];
+      var idx = { 'draft': 0, 'package complete': 1, 'dfm active': 2, 'awaiting validation': 3, 'dfm approved': 4 }[String(state).toLowerCase()];
+      if (idx == null) idx = 2;
+      return steps.map(function (s, i) {
+        var cls = i < idx ? 'done' : (i === idx ? 'now' : 'todo');
+        return '<span class="ps ' + cls + '">' + s + '</span>' + (i < steps.length - 1 ? '<span class="psar">→</span>' : '');
+      }).join('');
+    }
+
+    var current = memberships[0], curProv = 0;
+
+    function renderIssues(m) {
+      var p = m.providers[curProv] || m.providers[0];
+      els.provChip.innerHTML = p.name + ' <span class="cv"></span>';
+      if (els.provCtx) els.provCtx.textContent = m.ctx || (p.open || '');
+      if (els.provAll) els.provAll.textContent = 'View all ' + (m.allCount || (p.issues ? p.issues.length : 0)) + ' issues →';
+      els.dfmIssuesBody.innerHTML = (p.issues || []).map(irow).join('') || '<div class="muted fs-12" style="padding:10px 2px">No issues raised in this DFM yet.</div>';
+    }
+    function render(m) {
+      els.scopeProj && (els.scopeProj.textContent = m.project);
+      els.scopeCount && (els.scopeCount.textContent = memberships.length + ' projects');
+      if (els.scopeOther) {
+        var others = memberships.map(function (x) { return x.project; }).filter(function (n) { return n !== m.project; });
+        els.scopeOther.textContent = others.length ? ' Also in ' + others.join(', ') + '.' : '';
+      }
+      projChip.innerHTML = m.project + ' <span class="cv"></span>';
+      els.hdrState.className = 'badge ' + (m.stateClass || 'badge--blue'); els.hdrState.textContent = m.partState;
+      els.partSub.textContent = PART + ' · ' + PART_INFO.process + ' · ' + PART_INFO.material + ' · ' + m.volume + ' · ' + m.project;
+      els.pstate.innerHTML = pstateHtml(m.partState);
+      els.pkgTitle && (els.pkgTitle.textContent = 'Package — ' + m.packageRev);
+      els.mVol && (els.mVol.textContent = m.volume);
+      els.mStatus && (els.mStatus.textContent = m.partState);
+      els.mPartRev && (els.mPartRev.textContent = PART + ' · ' + m.packageRev);
+      els.mDfms && (els.mDfms.textContent = m.providers.length + ' · ' + m.providers.map(function (p) { return p.name.split(' ')[0]; }).join(' · '));
+      els.dfmReviews.innerHTML = m.providers.map(revRow).join('');
+      els.dfmRevSub && (els.dfmRevSub.textContent = m.providers.length + (m.providers.length === 1 ? ' provider' : ' providers') + ' · in parallel · each NDA-gated, scoped, and at its own revision pointer');
+      curProv = 0; renderIssues(m);
+      if (els.signoffBody) {
+        if (/TM-4 Bike Program/.test(m.project) && signoffSnapshot) els.signoffBody.innerHTML = signoffSnapshot;
+        else els.signoffBody.innerHTML =
+            '<div class="so-row"><span class="so-ic">⎯</span><div class="so-main"><div class="so-t">Parting line</div><div class="so-sub">ALSO ⇄ ' + m.providers[0].name + ' · proposed</div></div><span class="so-st proposed">◷ Proposed</span></div>'
+          + '<div class="so-row"><span class="so-ic">◎</span><div class="so-main"><div class="so-t">Material lock</div><div class="so-sub">ALSO ⇄ ' + m.providers[0].name + ' · ' + PART_INFO.material + ' · proposed</div></div><span class="so-st proposed">◷ Proposed</span></div>';
+      }
+      els.apprSub && (els.apprSub.textContent = 'The terminal gate — every issue dispositioned, all sign-offs signed, revision frozen, then steel can be cut. ' + (m.approval || ''));
+      els.apprLock && (els.apprLock.textContent = m.signoffs || '');
+      els.apprBtn && (els.apprBtn.textContent = 'Approve & freeze ' + m.packageRev);
+      // DFM Approval readiness checklist — keep TM-4's authored version, derive others from data
+      if (els.ckBody) {
+        if (/TM-4 Bike Program/.test(m.project) && ckSnapshot) {
+          els.ckBody.innerHTML = ckSnapshot; els.ckProg && (els.ckProg.textContent = ckProgSnap);
+        } else {
+          var openN = [], awaitN = [];
+          m.providers.forEach(function (p) { (p.issues || []).forEach(function (i) { if (i.sc === 'open') openN.push(i.no); else if (i.sc === 'await') awaitN.push(i.no); }); });
+          var signed = /signed/i.test(m.signoffs || '');
+          var rows = [
+            { ok: openN.length === 0, t: openN.length ? openN.length + ' issue' + (openN.length !== 1 ? 's' : '') + ' still open (' + openN.join(', ') + ') — need disposition or fix' : 'All issues dispositioned', n: openN.length || '✓' },
+            { ok: true, t: 'Package complete · ' + m.packageRev, n: '✓' },
+            { ok: awaitN.length === 0, t: awaitN.length ? awaitN.length + ' issue awaiting validation (' + awaitN.join(', ') + ')' : 'No fixes awaiting validation', n: awaitN.length || '✓' },
+            { ok: signed, t: m.signoffs || 'sign-offs pending', n: signed ? '✓' : '!' },
+            { ok: false, todo: true, t: 'Freeze approved revision → cut steel', n: '○' }
+          ];
+          els.ckBody.innerHTML = rows.map(function (r) {
+            return '<div class="ckrow' + (r.ok ? ' done' : (r.todo ? ' todo' : ' bad')) + '"><span class="ci' + (r.ok || r.todo ? '' : ' bad') + '">' + r.n + '</span>' + r.t + '</div>';
+          }).join('');
+          els.ckProg && (els.ckProg.textContent = rows.filter(function (r) { return r.ok; }).length + ' of ' + rows.length);
+        }
+      }
+    }
+
+    var openMenu = null;
+    function closeMenu() { if (openMenu) { try { document.body.removeChild(openMenu); } catch (e) {} openMenu = null; } }
+    function menuFor(anchor, items, onPick) {
+      var menu = document.createElement('div'); menu.className = 'mock-menu';
+      items.forEach(function (it) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = it.label;
+        if (it.active) b.style.fontWeight = '600';
+        b.addEventListener('click', function () { onPick(it.value); closeMenu(); });
+        menu.appendChild(b);
+      });
+      document.body.appendChild(menu);
+      var r = anchor.getBoundingClientRect();
+      menu.style.left = Math.max(8, r.left) + 'px'; menu.style.top = (r.bottom + 5) + 'px';
+      return menu;
+    }
+    document.addEventListener('click', function (e) {
+      if (openMenu && !openMenu.contains(e.target) && !projChip.contains(e.target) && !els.provChip.contains(e.target)) closeMenu();
+    });
+    projChip.addEventListener('click', function (e) {
+      e.stopPropagation(); if (openMenu) { closeMenu(); return; }
+      openMenu = menuFor(projChip, memberships.map(function (m) { return { label: m.project, value: m.project, active: m.project === current.project }; }), function (proj) { current = M.membership(PART, proj); render(current); });
+    });
+    els.provChip.addEventListener('click', function (e) {
+      e.stopPropagation(); if (openMenu) { closeMenu(); return; }
+      openMenu = menuFor(els.provChip, current.providers.map(function (p, i) { return { label: p.name, value: i, active: i === curProv }; }), function (i) { curProv = i; renderIssues(current); });
+    });
+
+    render(current);
+  })();
+</script>
+<script>
+  // Package file chips behave like a downloadable file manifest.
+  (function () {
+    [].slice.call(document.querySelectorAll('.files .file-chip')).forEach(function (c) {
+      c.setAttribute('title', 'Download ' + c.textContent.trim());
+      c.addEventListener('click', function () {
+        if (c.dataset.busy) return; c.dataset.busy = '1';
+        var t = c.textContent; c.style.opacity = '.6'; c.textContent = '⬇ Downloading…';
+        setTimeout(function () { c.textContent = t; c.style.opacity = ''; delete c.dataset.busy; }, 1100);
+      });
+    });
+  })();
+</script>
 </body>
 </html>

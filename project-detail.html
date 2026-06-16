@@ -83,7 +83,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="tbl-foot"><span class="muted fs-13">6 of 18 parts</span><button class="btn btn--sm" onclick="(window.Flows&&Flows.newPart())">+ Add part</button></div>
+      <div class="tbl-foot"><span class="muted fs-13">6 of 18 parts</span><button class="btn btn--sm" id="addFromLib" onclick="void(0)" title="Reuse a part that already exists in the workspace — it gets its own DFM in this project">+ Add from library</button><button class="btn btn--sm" onclick="(window.Flows&&Flows.newPart())">+ Add part</button></div>
     </div>
 
     <div class="panel">
@@ -141,5 +141,46 @@
 <script src="flows.js"></script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script src="model.js"></script>
+<script>
+  // Add from library — reuse an existing workspace part into this project (it gets its own DFM here).
+  (function () {
+    var M = window.ChorusModel, btn = document.getElementById('addFromLib');
+    if (!M || !btn) return;
+    var body = document.getElementById('partsBody');
+    function inProject() { return [].slice.call(body.querySelectorAll('.pid')).map(function (p) { return p.textContent.trim().split(' ')[0]; }); }
+    var menu = null;
+    function close() { if (menu) { menu.remove(); menu = null; } }
+    document.addEventListener('click', function (e) { if (menu && !menu.contains(e.target) && e.target !== btn) close(); });
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation(); e.preventDefault();
+      if (menu) { close(); return; }
+      var have = inProject();
+      var avail = M.parts().filter(function (p) { return have.indexOf(p.number) < 0; });
+      menu = document.createElement('div'); menu.className = 'mock-menu'; menu.style.minWidth = '250px';
+      if (!avail.length) {
+        var none = document.createElement('div'); none.style.cssText = 'padding:8px 10px;font-size:12px;color:var(--muted)';
+        none.textContent = 'Every workspace part is already in this project.'; menu.appendChild(none);
+      }
+      avail.forEach(function (p) {
+        var b = document.createElement('button'); b.type = 'button';
+        b.innerHTML = p.name + ' <span style="color:var(--muted)">· ' + p.number + '</span>';
+        b.addEventListener('click', function () { addPart(p); close(); });
+        menu.appendChild(b);
+      });
+      document.body.appendChild(menu);
+      var r = btn.getBoundingClientRect();
+      menu.style.left = Math.max(8, r.left - 90) + 'px'; menu.style.top = (r.bottom + 5) + 'px';
+    });
+    function addPart(p) {
+      var tr = document.createElement('tr'); tr.className = 'clickable';
+      tr.addEventListener('click', function () { location.href = 'part-detail.html'; });
+      tr.innerHTML = '<td><div class="part-cell"><span class="thumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" stroke="#9aa3a1" stroke-width="1.4"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="#9aa3a1" stroke-width="1.4"/></svg></span><span><span class="pname">' + p.name + '</span><br/><span class="pid">' + p.number + ' · reused</span></span></div></td>'
+        + '<td>Rev A</td><td>' + p.process + '</td><td><span class="badge badge--blue">DFM Active</span></td><td style="text-align:right"><span class="pill muted"><span class="dot"></span>new DFM</span></td>';
+      body.appendChild(tr);
+      var t = btn.textContent; btn.textContent = 'Added ' + p.number + ' ✓'; setTimeout(function () { btn.textContent = t; }, 1400);
+    }
+  })();
+</script>
 </body>
 </html>
