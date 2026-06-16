@@ -229,5 +229,25 @@
   </div>
 </div>
 <script src="switcher.js"></script>
+<script>
+  // "Validate & close" actually advances the issue to Closed — stepper, status pill, sidebar.
+  (function () {
+    function init() {
+      var v = [].slice.call(document.querySelectorAll('button.btn')).filter(function (b) { return /Validate & close/.test(b.textContent); })[0];
+      if (!v) return;
+      v.addEventListener('click', function () {
+        var tick = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        document.querySelectorAll('.stepper .sstep').forEach(function (s) {
+          if (/Validated|Closed/.test(s.textContent)) { s.classList.remove('active', 'todo'); s.classList.add('done'); var d = s.querySelector('.dot'); if (d) d.innerHTML = tick; var dt = s.querySelector('.dt'); if (dt && /—|awaiting/i.test(dt.textContent)) dt.textContent = 'just now'; }
+        });
+        var big = document.querySelector('.st-big'); if (big) { big.className = 'st-big green'; big.textContent = 'Closed'; }
+        var sv = document.querySelector('.side .mrow .v'); if (sv) { sv.textContent = 'Closed'; sv.style.color = 'var(--green-600t)'; }
+        var ds = document.getElementById('d2dRev'); // leave 2D as-is
+        v.textContent = 'Validated ✓'; v.disabled = true; v.style.opacity = '.65'; v.style.cursor = 'default';
+      });
+    }
+    if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
 </body>
 </html>

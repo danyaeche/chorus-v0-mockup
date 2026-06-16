@@ -122,5 +122,42 @@
 <script src="store.js"></script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // Real filtering: status chips + type chips + Severity/Category dropdowns actually filter the rows.
+  (function () {
+    var rows = [].slice.call(document.querySelectorAll('.tbl tbody tr'));
+    var foot = document.querySelector('.tbl-foot .muted');
+    function btnByLabel(label) { return [].slice.call(document.querySelectorAll('button.btn')).filter(function (x) { return new RegExp('^' + label).test((x.textContent || '').trim()); })[0]; }
+    var sevBtn, catBtn;
+    function chip(typeRow) {
+      var r = document.querySelector(typeRow ? '.filter-chips.type-filter' : '.filter-chips:not(.type-filter)');
+      var on = r && r.querySelector('.fchip.on');
+      return on ? on.textContent.replace(/\s*\d+\s*$/, '').trim() : 'All';
+    }
+    function drop(btn, base) { if (!btn) return ''; var t = (btn.textContent || '').replace('▾', '').trim(); return (t === base || /^all/i.test(t)) ? '' : t; }
+    function statusOk(cell, c) {
+      if (!c || /^all/i.test(c)) return true;
+      var s = cell.toLowerCase(); c = c.toLowerCase();
+      if (c === 'validated') return /validated/.test(s) && s.indexOf('awaiting') < 0;
+      if (c === 'dispositioned') return s.indexOf('disposition') >= 0 || s.indexOf('accepted') >= 0;
+      if (c === 'awaiting validation') return s.indexOf('awaiting') >= 0;
+      return s.indexOf(c.split(' ')[0]) >= 0;
+    }
+    function apply() {
+      var status = chip(false), type = chip(true), sev = drop(sevBtn, 'Severity'), cat = drop(catBtn, 'Category'), n = 0;
+      rows.forEach(function (tr) {
+        var st = (tr.querySelector('.ist') || {}).textContent || '',
+            ty = ((tr.querySelector('.itype') || {}).textContent || '').trim(),
+            sv = ((tr.querySelector('.isev') || {}).textContent || '').trim(),
+            ct = ((tr.querySelector('.cat') || {}).textContent || '').trim();
+        var ok = statusOk(st, status) && (!type || /^all/i.test(type) || ty === type) && (!sev || sv.indexOf(sev) >= 0) && (!cat || ct === cat);
+        tr.style.display = ok ? '' : 'none'; if (ok) n++;
+      });
+      if (foot) foot.textContent = 'Showing ' + n + ' of ' + rows.length + ' issues · filtered live';
+    }
+    function init() { sevBtn = btnByLabel('Severity'); catBtn = btnByLabel('Category'); document.addEventListener('mock:filter', apply); }
+    if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
 </body>
 </html>

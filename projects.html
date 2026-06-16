@@ -98,5 +98,28 @@
 </script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // Status dropdown actually filters the projects list.
+  (function () {
+    var btn;
+    function rows() { return [].slice.call(document.querySelectorAll('#projBody tr')); }
+    function val() { if (!btn) return ''; var t = btn.textContent.replace('▾', '').trim(); return (t === 'Status' || /^all/i.test(t)) ? '' : t.toLowerCase(); }
+    function apply() {
+      var v = val();
+      rows().forEach(function (tr) {
+        if (!v) { tr.style.display = ''; return; }
+        var s = tr.textContent.toLowerCase(), ok;
+        if (v.indexOf('active') >= 0) ok = s.indexOf('active') >= 0;
+        else if (v.indexOf('planning') >= 0) ok = s.indexOf('planning') >= 0;
+        else if (v.indexOf('hold') >= 0) ok = s.indexOf('hold') >= 0;
+        else if (v.indexOf('approved') >= 0 || v.indexOf('dfm') >= 0) ok = /approved|complete/.test(s);
+        else ok = s.indexOf(v.split(' ')[0]) >= 0;
+        tr.style.display = ok ? '' : 'none';
+      });
+    }
+    function init() { btn = [].slice.call(document.querySelectorAll('button.btn')).filter(function (x) { return /^Status/.test(x.textContent.trim()); })[0]; document.addEventListener('mock:filter', apply); }
+    if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
 </body>
 </html>

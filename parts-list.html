@@ -233,5 +233,28 @@
     }
   })();
 </script>
+<script>
+  // Real filtering: status chips actually filter the parts (grid cards + list rows) by their status badge.
+  (function () {
+    var cards = [].slice.call(document.querySelectorAll('#gridView .cad-card'));
+    var rows = [].slice.call(document.querySelectorAll('#listView tbody tr'));
+    function chip() { var on = document.querySelector('.filter-chips .fchip.on'); return on ? on.textContent.replace(/\s*\d+\s*$/, '').trim() : 'All'; }
+    function ok(scope, c) {
+      if (!c || /^all/i.test(c)) return true;
+      var b = scope.querySelector('.badge'); var s = (b ? b.textContent : '').toLowerCase(); c = c.toLowerCase();
+      if (c === 'dfm active') return s.indexOf('dfm active') >= 0;
+      if (c === 'awaiting validation') return s.indexOf('awaiting') >= 0;
+      if (c === 'needs response') return s.indexOf('needs') >= 0;
+      if (c === 'dfm approved') return s.indexOf('approved') >= 0;
+      return s.indexOf(c) >= 0;
+    }
+    function apply() {
+      var c = chip();
+      cards.forEach(function (el) { el.style.display = ok(el, c) ? '' : 'none'; });
+      rows.forEach(function (tr) { tr.style.display = ok(tr, c) ? '' : 'none'; });
+    }
+    document.addEventListener('mock:filter', apply);
+  })();
+</script>
 </body>
 </html>
