@@ -42,9 +42,10 @@
   <aside class="sidebar" data-active="issues"></aside>
   <main class="main">
     <div class="page-head">
-      <div><h1>Issue Inbox</h1><div class="subtitle" style="margin:4px 0 0">Every DFM issue · the atomic unit of work · across all parts</div></div>
+      <div><h1>Issue Inbox</h1><div class="subtitle" style="margin:4px 0 0">Every DFM issue · the atomic unit of work · across all parts &amp; projects</div></div>
       <div class="page-actions">
         <a class="btn btn--sm" href="overview.html">Dashboard</a>
+        <button class="btn btn--sm">Project ▾</button>
         <button class="btn btn--sm">Category ▾</button>
         <button class="btn btn--sm">Severity ▾</button>
       </div>
@@ -68,52 +69,60 @@
 
     <div class="tbl-wrap">
       <table class="tbl">
-        <thead><tr><th>#</th><th>Issue</th><th>Part</th><th>Type</th><th>Severity</th><th>Category</th><th>Status</th><th style="text-align:right">Updated</th></tr></thead>
+        <thead><tr><th>#</th><th>Issue</th><th>Part</th><th>Project</th><th>Type</th><th>Severity</th><th>Category</th><th>Status</th><th style="text-align:right">Updated</th></tr></thead>
         <tbody>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#14</span></td><td><span class="ititle">Ejector pins mark Class A face</span></td><td>Battery enclosure — lower</td>
+            <td><span class="ino">#14</span></td><td><span class="ititle">Ejector pins mark Class A face</span></td><td>Battery enclosure — lower</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#13</span></td><td><span class="ititle">Rib-to-wall ratio causes sink</span></td><td>Battery enclosure — lower</td>
+            <td><span class="ino">#13</span></td><td><span class="ititle">Rib-to-wall ratio causes sink</span></td><td>Battery enclosure — lower</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype info">Info</span></td><td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Geometry</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">2h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#12</span></td><td><span class="ititle">Insufficient draft for ejection</span></td><td>Battery enclosure — lower</td>
+            <td><span class="ino">#12</span></td><td><span class="ititle">Insufficient draft for ejection</span></td><td>Battery enclosure — lower</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype show">Show-stopper</span></td><td><span class="isev high"><span class="d"></span>High</span></td><td><span class="cat">Tooling</span></td><td><span class="ist await"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Awaiting validation</span></td><td style="text-align:right" class="muted">5h</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#11</span></td><td><span class="ititle">Tolerance stack-up vs shrink won't hold</span></td><td>Controller housing</td>
+            <td><span class="ino">#11</span></td><td><span class="ititle">Tolerance stack-up vs shrink won't hold</span></td><td>Controller housing</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype show">Show-stopper</span></td><td><span class="isev crit"><span class="d"></span>Critical</span></td><td><span class="cat">Tolerance</span></td><td><span class="ist open">Open · needs decision</span></td><td style="text-align:right" class="muted">1d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#10</span></td><td><span class="ititle">Undercut requires a lifter</span></td><td>Display bezel</td>
+            <td><span class="ino">#10</span></td><td><span class="ititle">Undercut requires a lifter</span></td><td>Display bezel</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist accepted">Dispositioned · accepted</span></td><td style="text-align:right" class="muted">2d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#9</span></td><td><span class="ititle">Parting line across cosmetic edge</span></td><td>Battery enclosure — upper</td>
+            <td><span class="ino">#9</span></td><td><span class="ititle">Parting line across cosmetic edge</span></td><td>Battery enclosure — upper</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype prop">Proposal</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">1d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#8</span></td><td><span class="ititle">Snap-fit hook too stiff to assemble</span></td><td>Charge-port cap</td>
+            <td><span class="ino">#8</span></td><td><span class="ititle">Snap-fit hook too stiff to assemble</span></td><td>Charge-port cap</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Assembly</span></td><td><span class="ist validated">Validated</span></td><td style="text-align:right" class="muted">3d</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#7</span></td><td><span class="ititle">Gate witness on cosmetic face</span></td><td>Battery enclosure — lower</td>
+            <td><span class="ino">#7</span></td><td><span class="ititle">Gate witness on cosmetic face</span></td><td>Battery enclosure — lower</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Tooling</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 13</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#6</span></td><td><span class="ititle">Material substitution PC-ABS → 20% GF nylon</span></td><td>Light lens</td>
+            <td><span class="ino">#6</span></td><td><span class="ititle">Material substitution PC-ABS → 20% GF nylon</span></td><td>Light lens</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype prop">Proposal</span></td><td><span class="isev low"><span class="d"></span>Low</span></td><td><span class="cat">Material</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 10</td>
           </tr>
           <tr class="clickable" onclick="location.href='issue-detail.html'">
-            <td><span class="ino">#5</span></td><td><span class="ititle">Weld line at boss — cosmetic + strength</span></td><td>Controller housing</td>
+            <td><span class="ino">#5</span></td><td><span class="ititle">Weld line at boss — cosmetic + strength</span></td><td>Controller housing</td><td class="iproj">TM-4 Bike Program</td>
             <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Process</span></td><td><span class="ist closed"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Closed</span></td><td style="text-align:right" class="muted">May 8</td>
+          </tr>
+          <tr class="clickable" onclick="location.href='issue-detail.html'">
+            <td><span class="ino">#4</span></td><td><span class="ititle">Wall section too thin for the larger Cargo pack</span></td><td>Battery enclosure — lower</td><td class="iproj">Cargo eBike</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev high"><span class="d"></span>High</span></td><td><span class="cat">Geometry</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">4h</td>
+          </tr>
+          <tr class="clickable" onclick="location.href='issue-detail.html'">
+            <td><span class="ino">#2</span></td><td><span class="ititle">Mounting bosses need coring to avoid sink</span></td><td>Battery enclosure — lower</td><td class="iproj">Cargo eBike</td>
+            <td><span class="itype find">Finding</span></td><td><span class="isev med"><span class="d"></span>Medium</span></td><td><span class="cat">Geometry</span></td><td><span class="ist open">Open</span></td><td style="text-align:right" class="muted">6h</td>
           </tr>
         </tbody>
       </table>
       <div class="tbl-foot">
-        <span class="muted fs-13">Showing 10 of 34 open · derived state: Open → Dispositioned → Implemented → Validated → Closed</span>
+        <span class="muted fs-13">Showing 12 of 36 · across 2 projects · derived state: Open → Dispositioned → Implemented → Validated → Closed</span>
         <div class="pager"><span class="cur">1</span><a href="#">2</a><a href="#">3</a></div>
       </div>
     </div>
@@ -128,7 +137,7 @@
     var rows = [].slice.call(document.querySelectorAll('.tbl tbody tr'));
     var foot = document.querySelector('.tbl-foot .muted');
     function btnByLabel(label) { return [].slice.call(document.querySelectorAll('button.btn')).filter(function (x) { return new RegExp('^' + label).test((x.textContent || '').trim()); })[0]; }
-    var sevBtn, catBtn;
+    var sevBtn, catBtn, projBtn;
     function chip(typeRow) {
       var r = document.querySelector(typeRow ? '.filter-chips.type-filter' : '.filter-chips:not(.type-filter)');
       var on = r && r.querySelector('.fchip.on');
@@ -144,18 +153,19 @@
       return s.indexOf(c.split(' ')[0]) >= 0;
     }
     function apply() {
-      var status = chip(false), type = chip(true), sev = drop(sevBtn, 'Severity'), cat = drop(catBtn, 'Category'), n = 0;
+      var status = chip(false), type = chip(true), sev = drop(sevBtn, 'Severity'), cat = drop(catBtn, 'Category'), proj = drop(projBtn, 'Project'), n = 0;
       rows.forEach(function (tr) {
         var st = (tr.querySelector('.ist') || {}).textContent || '',
             ty = ((tr.querySelector('.itype') || {}).textContent || '').trim(),
             sv = ((tr.querySelector('.isev') || {}).textContent || '').trim(),
-            ct = ((tr.querySelector('.cat') || {}).textContent || '').trim();
-        var ok = statusOk(st, status) && (!type || /^all/i.test(type) || ty === type) && (!sev || sv.indexOf(sev) >= 0) && (!cat || ct === cat);
+            ct = ((tr.querySelector('.cat') || {}).textContent || '').trim(),
+            pj = ((tr.querySelector('.iproj') || {}).textContent || '').trim();
+        var ok = statusOk(st, status) && (!type || /^all/i.test(type) || ty === type) && (!sev || sv.indexOf(sev) >= 0) && (!cat || ct === cat) && (!proj || pj === proj);
         tr.style.display = ok ? '' : 'none'; if (ok) n++;
       });
       if (foot) foot.textContent = 'Showing ' + n + ' of ' + rows.length + ' issues · filtered live';
     }
-    function init() { sevBtn = btnByLabel('Severity'); catBtn = btnByLabel('Category'); document.addEventListener('mock:filter', apply); }
+    function init() { sevBtn = btnByLabel('Severity'); catBtn = btnByLabel('Category'); projBtn = btnByLabel('Project'); document.addEventListener('mock:filter', apply); }
     if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
   })();
 </script>
