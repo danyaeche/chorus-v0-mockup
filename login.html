@@ -43,6 +43,26 @@
   </div>
 </div>
 <script src="switcher.js"></script>
+<script>
+  // Forgot password sends a reset link; Remember me persists the email.
+  (function () {
+    var email = document.querySelector('input[type="email"]');
+    var remember = document.querySelector('.checkbox input[type="checkbox"]');
+    var forgot = [].slice.call(document.querySelectorAll('a.link-muted')).filter(function (a) { return /forgot/i.test(a.textContent); })[0];
+    try {
+      var saved = localStorage.getItem('chorus.rememberEmail');
+      if (saved && email) { email.value = saved; if (remember) remember.checked = true; }
+    } catch (e) {}
+    if (remember) remember.addEventListener('change', function () {
+      try { if (remember.checked && email) localStorage.setItem('chorus.rememberEmail', email.value); else localStorage.removeItem('chorus.rememberEmail'); } catch (e) {}
+    });
+    if (forgot) forgot.addEventListener('click', function (e) {
+      e.preventDefault();
+      var t = forgot.textContent; forgot.textContent = 'Reset link sent ✓'; forgot.style.color = 'var(--green-600t)';
+      setTimeout(function () { forgot.textContent = t; forgot.style.color = ''; }, 1700);
+    });
+  })();
+</script>
 <script type="importmap">
 { "imports": { "three": "./vendor/three/build/three.module.js", "three/addons/": "./vendor/three/addons/" } }
 </script>

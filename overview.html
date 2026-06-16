@@ -235,5 +235,26 @@
 </script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // The date-range dropdown recomputes the throughput chart (visible weeks) and annotates the subtitle.
+  (function () {
+    function ready(fn) { document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn); }
+    ready(function () {
+      var WEEKS = { 'Last 7 days': 2, 'Last 30 days': 4, 'Last 90 days': 8, 'This year': 8 };
+      var groups = [].slice.call(document.querySelectorAll('.bars .bargroup'));
+      var sub = document.getElementById('dashSub');
+      var base = sub ? sub.textContent.replace(/\s·\s(last|this)\b.*$/i, '') : '';
+      function rangeBtn() { return [].slice.call(document.querySelectorAll('.page-actions button.btn')).filter(function (b) { return /day|year/i.test(b.textContent); })[0]; }
+      function apply() {
+        var b = rangeBtn(); if (!b) return;
+        var r = b.textContent.replace('▾', '').trim();
+        var n = WEEKS[r] || groups.length;
+        groups.forEach(function (g, i) { g.style.display = i >= groups.length - n ? '' : 'none'; });
+        if (sub) sub.textContent = base + ' · ' + r.toLowerCase();
+      }
+      document.addEventListener('mock:filter', apply);
+    });
+  })();
+</script>
 </body>
 </html>

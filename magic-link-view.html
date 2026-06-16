@@ -90,7 +90,7 @@
     <div class="nda-bar">
       <span class="nda-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#b7791f" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#b7791f" stroke-width="1.6"/></svg></span>
       <div class="nda-txt"><b>NDA accepted · Apr 8, 2025</b> — mutual NDA between ALSO and Hsinchu Precision. Files stayed locked until you accepted; the brand can't invite a reviewer until this gate is cleared.</div>
-      <a class="nda-link" href="#">View NDA →</a>
+      <a class="nda-link" href="#" onclick="return openNda()">View NDA →</a>
     </div>
 
     <!-- Scoped access + permissions -->
@@ -168,6 +168,30 @@
   </div>
 </div>
 
+<!-- NDA preview modal -->
+<div id="ndaModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(20,20,20,.45);align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;max-width:560px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.32);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)">
+      <b style="font-size:15px">Mutual Non-Disclosure Agreement</b>
+      <button type="button" onclick="closeNda()" style="border:0;background:transparent;font-size:20px;line-height:1;cursor:pointer;color:var(--muted)">×</button>
+    </div>
+    <div style="padding:18px 22px;font-size:13px;color:var(--ink-2);line-height:1.6;max-height:50vh;overflow:auto">
+      <p style="margin:0 0 10px">This Mutual Non-Disclosure Agreement ("Agreement") is entered into between <b>ALSO</b> ("Brand") and <b>Hsinchu Precision</b> ("Reviewer") as of <b>April 8, 2025</b>.</p>
+      <p style="margin:0 0 10px">Each party may disclose Confidential Information — including CAD geometry, tolerances, materials, tooling strategy, and DFM findings — solely for the purpose of evaluating manufacturability of the disclosed parts. The receiving party shall not disclose such information to any third party, including other contract manufacturers, and shall protect it with at least reasonable care.</p>
+      <p style="margin:0 0 10px">Confidential Information does not include information that is publicly available, independently developed, or rightfully received from a third party without restriction. Obligations survive for <b>3 years</b> from disclosure. No license to any intellectual property is granted except as expressly stated.</p>
+      <p style="margin:0;color:var(--green-600t)"><b>Accepted</b> · Apr 8, 2025 · Benjamin Chen (Hsinchu Precision)</p>
+    </div>
+    <div style="padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px">
+      <button type="button" class="btn btn--sm" onclick="closeNda()">Close</button>
+      <a class="btn btn--primary btn--sm" href="#" onclick="(function(b){var t=b.textContent;b.textContent='Downloaded ✓';setTimeout(function(){b.textContent=t;},1200);})(this);return false">Download PDF</a>
+    </div>
+  </div>
+</div>
+<script>
+  function openNda() { var m = document.getElementById('ndaModal'); if (m) m.style.display = 'flex'; return false; }
+  function closeNda() { var m = document.getElementById('ndaModal'); if (m) m.style.display = 'none'; }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNda(); });
+</script>
 <script src="store.js"></script>
 <script>
   // If a project/part was just created via a wizard, render its parts here (issue-centric review).

@@ -64,7 +64,7 @@
       <!-- Workspace members (brand team) -->
       <div class="set-section">
         <div class="panel">
-          <div class="panel-head"><h2>Members</h2><a href="#">Invite teammate</a></div>
+          <div class="panel-head"><h2>Members</h2><a href="team.html">Invite teammate</a></div>
           <div class="member"><div class="av">MK</div><div class="grow"><div class="nm">Mathieu Kury</div><div class="em">mkury@also.com</div></div><span class="role">Owner</span></div>
           <div class="member"><div class="av" style="background:#8a6d1f">TS</div><div class="grow"><div class="nm">Thomas Sullivan</div><div class="em">tsullivan@also.com</div></div><span class="role">Sourcing</span></div>
           <div class="member"><div class="av" style="background:#3f6b8a">ER</div><div class="grow"><div class="nm">Elena Rossi</div><div class="em">erossi@also.com</div></div><span class="role">Design / ME</span></div>
@@ -94,5 +94,27 @@
 <script src="store.js"></script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // Settings: View one-pager (PDF) acknowledges; Rename actually edits the workspace name.
+  (function () {
+    function ready(fn) { document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn); }
+    ready(function () {
+      [].slice.call(document.querySelectorAll('.panel-head a')).forEach(function (a) {
+        if (!/one-pager|pdf/i.test(a.textContent)) return;
+        a.addEventListener('click', function (e) { e.preventDefault(); var t = a.textContent; a.textContent = 'Opening PDF…'; setTimeout(function () { a.textContent = t; }, 1400); });
+      });
+      [].slice.call(document.querySelectorAll('.set-row a.btn')).forEach(function (a) {
+        if (!/^rename$/i.test(a.textContent.trim())) return;
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          var desc = a.closest('.set-row').querySelector('.desc');
+          var cur = desc ? desc.textContent.trim() : '';
+          var v = window.prompt('Rename workspace', cur);
+          if (v && v.trim() && desc) { desc.textContent = v.trim(); var t = a.textContent; a.textContent = 'Saved ✓'; setTimeout(function () { a.textContent = t; }, 1200); }
+        });
+      });
+    });
+  })();
+</script>
 </body>
 </html>

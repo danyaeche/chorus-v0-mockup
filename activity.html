@@ -161,5 +161,70 @@
 <script src="store.js"></script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // Activity feed — real event-type filter chips + a working CSV export of the visible events.
+  (function () {
+    function ready(fn) { document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn); }
+    ready(function () {
+      var chips = [].slice.call(document.querySelectorAll('.filter-chips .tag'));
+      var items = [].slice.call(document.querySelectorAll('.tl-item'));
+      var days  = [].slice.call(document.querySelectorAll('.day-label'));
+
+      function evClass(it) { var e = it.querySelector('.ev'); return e ? e.className.replace(/\bev\b/, '').trim() : ''; }
+      function matches(label, it) {
+        var c = evClass(it);
+        if (label === 'All') return true;
+        if (label === 'Created') return /created/.test(c);
+        if (label === 'Decision') return /accepted|rejected/.test(c);
+        if (label === 'Revision') return /revision/.test(c);
+        if (label === 'Validation') return /validation/.test(c);
+        if (label === 'Closed') return /closed/.test(c);
+        if (label === 'DFM complete') return /complete/.test(c);
+        return true;
+      }
+      function apply(label) {
+        var shown = 0;
+        items.forEach(function (it) { var ok = matches(label, it); it.style.display = ok ? '' : 'none'; if (ok) shown++; });
+        days.forEach(function (d) {
+          var tl = d.nextElementSibling;
+          var any = tl ? [].slice.call(tl.querySelectorAll('.tl-item')).some(function (it) { return it.style.display !== 'none'; }) : false;
+          d.style.display = any ? '' : 'none';
+          if (tl) tl.style.display = any ? '' : 'none';
+        });
+        return shown;
+      }
+      chips.forEach(function (c) {
+        c.addEventListener('click', function () {
+          chips.forEach(function (o) { o.classList.remove('on'); });
+          c.classList.add('on');
+          apply((c.textContent || '').trim());
+        });
+      });
+
+      // Export log (CSV) — actually builds and downloads a CSV of the currently-visible events.
+      var exp = [].slice.call(document.querySelectorAll('.page-actions a')).filter(function (a) { return /export/i.test(a.textContent); })[0];
+      if (exp) exp.addEventListener('click', function (e) {
+        e.preventDefault();
+        var q = function (s) { return '"' + String(s).replace(/"/g, '""').replace(/\s+/g, ' ').trim() + '"'; };
+        var rows = [['Date', 'Event', 'Actor', 'Summary', 'Detail'].map(q)];
+        items.filter(function (it) { return it.style.display !== 'none'; }).forEach(function (it) {
+          var t = it.querySelector('.tl-t');
+          var ev = (it.querySelector('.ev') || {}).textContent || '';
+          var actor = ((t && t.querySelector('b')) || {}).textContent || '';
+          var summary = t ? t.textContent.replace(ev, '') : '';
+          var detail = (it.querySelector('.tl-m') || {}).textContent || '';
+          var time = (it.querySelector('.tl-time') || {}).textContent || '';
+          rows.push([time, ev, actor, summary, detail].map(q));
+        });
+        var csv = rows.map(function (r) { return r.join(','); }).join('\n');
+        var url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        var a = document.createElement('a'); a.href = url; a.download = 'chorus-activity-log.csv';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        var o = exp.textContent; exp.textContent = 'Exported ✓'; setTimeout(function () { exp.textContent = o; }, 1100);
+      });
+    });
+  })();
+</script>
 </body>
 </html>

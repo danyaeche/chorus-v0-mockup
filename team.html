@@ -114,5 +114,40 @@
 <script src="store.js"></script>
 <script src="sidebar.js"></script>
 <script src="switcher.js"></script>
+<script>
+  // Each ··· row-action opens a real menu: Edit role / Resend invite / Remove from workspace.
+  (function () {
+    function ready(fn) { document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn); }
+    ready(function () {
+      var menu = null;
+      function close() { if (menu) { menu.remove(); menu = null; } }
+      function flash(el, msg) { var t = el.textContent; el.textContent = msg; setTimeout(function () { el.textContent = t; }, 1100); }
+      document.addEventListener('click', function (e) { if (menu && !menu.contains(e.target)) close(); });
+      [].slice.call(document.querySelectorAll('.row-act')).forEach(function (act) {
+        act.setAttribute('title', 'Row actions');
+        act.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (menu && menu._owner === act) { close(); return; }
+          close();
+          var tr = act.closest('tr');
+          menu = document.createElement('div'); menu.className = 'mock-menu'; menu._owner = act;
+          [['Edit role', function () { flash(act, 'Updated ✓'); }],
+           ['Resend invite', function () { flash(act, 'Sent ✓'); }],
+           ['Remove from workspace', function () { if (tr) { tr.style.transition = 'opacity .2s'; tr.style.opacity = '0'; setTimeout(function () { tr.remove(); }, 200); } }]]
+            .forEach(function (o) {
+              var b = document.createElement('button'); b.type = 'button'; b.textContent = o[0];
+              if (/Remove/.test(o[0])) b.style.color = 'var(--red-600)';
+              b.addEventListener('click', function () { o[1](); close(); });
+              menu.appendChild(b);
+            });
+          document.body.appendChild(menu);
+          var r = act.getBoundingClientRect();
+          menu.style.left = Math.max(8, Math.min(r.left - 120, window.innerWidth - 190)) + 'px';
+          menu.style.top = (r.bottom + 5) + 'px';
+        });
+      });
+    });
+  })();
+</script>
 </body>
 </html>
