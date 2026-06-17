@@ -101,6 +101,24 @@ The v2 object hierarchy, the derived issue state machine, the 11-step flow, and 
 
 ---
 
+## Every page
+
+The complete screen set, in user-flow order — rendered full-page at 1440×900. Files live in [`screenshots-export/`](screenshots-export/).
+
+| | |
+|---|---|
+| **01 · Login**<br>![Login](screenshots-export/01-login.png) | **02 · Sign up**<br>![Sign up](screenshots-export/02-signup.png) |
+| **03 · Dashboard**<br>![Dashboard](screenshots-export/03-dashboard.png) | **04 · Projects**<br>![Projects](screenshots-export/04-projects.png) |
+| **05 · Project detail**<br>![Project detail](screenshots-export/05-project-detail.png) | **06 · Create project**<br>![Create project](screenshots-export/06-create-project.png) |
+| **07 · Parts — CAD gallery**<br>![Parts](screenshots-export/07-part-list.png) | **08 · Part detail**<br>![Part detail](screenshots-export/08-part-detail.png) |
+| **09 · Issue inbox**<br>![Issue inbox](screenshots-export/09-issue-list.png) | **10 · Issue detail**<br>![Issue detail](screenshots-export/10-issue-detail.png) |
+| **11 · Revision history**<br>![Revision history](screenshots-export/11-revision-history.png) | **12 · Revision diff**<br>![Revision diff](screenshots-export/12-revision-diff.png) |
+| **13 · Activity**<br>![Activity](screenshots-export/13-activity.png) | **14 · Team**<br>![Team](screenshots-export/14-team.png) |
+| **15 · Manufacturer access**<br>![Manufacturer access](screenshots-export/15-manufacturer-access.png) | **16 · Reviewer portal**<br>![Reviewer portal](screenshots-export/16-supplier-portal.png) |
+| **17 · Settings**<br>![Settings](screenshots-export/17-settings.png) | |
+
+---
+
 ## Tech
 
 - **Static HTML / CSS / JS** — no build step, no framework, no backend.
