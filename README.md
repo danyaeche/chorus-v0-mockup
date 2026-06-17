@@ -62,6 +62,237 @@ Each issue carries: title, **type** (Show-stopper/Finding/Proposal/Info), **seve
 | Dispositions every issue, implements fixes, co-signs sign-offs | Validates the fixes to *its own* issues; co-signs sign-offs |
 | *Cannot validate its own fixes* | *NDA-gated, watermarked, and walled off from other providers' DFMs* |
 
+### Full object hierarchy
+
+The complete v0 object model — DFM-only, multi-provider. Everything above is the abbreviated view; this is the whole tree, every field and state. **Changes from the previous version are marked ◆.** Source: [`docs/chorus-v0-hierarchy.pdf`](docs/chorus-v0-hierarchy.pdf).
+
+<details>
+<summary><strong>Expand the full hierarchy</strong> (Project → Parts → Package · Revisions · DFMs · Issues · Sign-offs · Approval → Reviewers → State)</summary>
+
+```text
+Workspace / Organization
+│
+└── Project                              (TM-4 Bike Program · rolls up parts & DFMs across providers)
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   PROJECT METADATA
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├── Project Metadata
+    │       ├── Name
+    │       ├── Product
+    │       ├── Brand Owner
+    │       ├── Engineering Owner
+    │       └── Status
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   PARTS
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├── Parts
+    │   │
+    │   └── Part                         (Battery enclosure — lower · Injection Mold)
+    │       │
+    │       │   ────────────────────────────────
+    │       │   PART METADATA
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Part Metadata
+    │       │       ├── Part Number
+    │       │       ├── Material
+    │       │       ├── Process               (Injection Mold, CNC, Sheet Metal, etc.)
+    │       │       ├── Owner
+    │       │       ├── State                 (see Part State below)
+    │       │       └── Current Released Revision        ◆ single source of truth pointer
+    │       │
+    │       │   ────────────────────────────────
+    │       │   PACKAGE        ◆ completeness now ENFORCED
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Package
+    │       │       ├── Required Items        ◆ template driven by Process type
+    │       │       │       │                   (injection-mold template mirrors DFM checklist §1)
+    │       │       │       ├── 3D CAD (STEP)
+    │       │       │       ├── 2D Drawing w/ GD&T callouts
+    │       │       │       ├── Material Spec / Approved Shortlist
+    │       │       │       ├── Cosmetic Surface Grades (Class A/B/C)
+    │       │       │       ├── Volume Forecast + Initial Order Qty
+    │       │       │       ├── Packaging & Labeling Requirements
+    │       │       │       └── Regulatory Requirements (UL, FDA, RoHS, etc.)
+    │       │       ├── Optional Items
+    │       │       │       ├── Target Unit Cost / Should-Cost
+    │       │       │       ├── Render / Screenshot
+    │       │       │       └── Other Attachments
+    │       │       └── Package State         ◆ Incomplete → Complete
+    │       │                                   GATE: reviewers cannot be invited until Complete
+    │       │
+    │       │   ────────────────────────────────
+    │       │   REVISIONS      (shared design record)
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Revisions                  every provider reviews these
+    │       │       ├── Rev A
+    │       │       │       ├── Files
+    │       │       │       ├── Uploaded By / Timestamp
+    │       │       │       ├── Change Summary
+    │       │       │       └── Issues Implemented       ◆ back-links to issues fixed in this rev
+    │       │       ├── Rev B
+    │       │       └── Rev N
+    │       │
+    │       │   ────────────────────────────────
+    │       │   DFMs           ◆ one per provider · parallel · confidential to each
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── DFMs
+    │       │   │
+    │       │   └── DFM                   (Hsinchu Precision · CM · scoped magic link)
+    │       │       │
+    │       │       ├── DFM Metadata
+    │       │       │       ├── Provider (→ External Reviewer)
+    │       │       │       ├── Role          (CM, Supplier, Fabricator, Tooling)
+    │       │       │       └── Confidentiality Boundary    ◆ providers never see each other's DFMs
+    │       │       │
+    │       │       ├── Current Revision Under Review       ◆ per-DFM pointer — Provider 1 can be
+    │       │       │                                         on Rev B while Provider 2 is on Rev A
+    │       │       │
+    │       │       │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+    │       │       │   ISSUES   ◀── the atomic unit of work
+    │       │       │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+    │       │       │
+    │       │       ├── Issues
+    │       │       │   │
+    │       │       │   └── Issue         (#12 Insufficient draft for ejection)
+    │       │       │       ├── Title / Description
+    │       │       │       ├── Type      ◆ NEW axis — findings ≠ proposals
+    │       │       │       │       ├── Show-stopper        (not moldable as designed)
+    │       │       │       │       ├── Finding             (problem needing a design change)
+    │       │       │       │       ├── Proposal            (parting line, gate location, shrink est.)
+    │       │       │       │       └── Info                (no action required)
+    │       │       │       ├── Category
+    │       │       │       │       ├── Geometry / Tolerance / Material
+    │       │       │       │       └── Tooling / Assembly / Process / Cost-Yield Risk
+    │       │       │       ├── Severity              (Critical / High / Medium / Low)
+    │       │       │       ├── Created On Revision / Created By
+    │       │       │       ├── Recommendation        (provider's proposed fix)
+    │       │       │       ├── Cost / Yield Impact   ◆ optional $ field — future quote hook
+    │       │       │       ├── Brand Decision
+    │       │       │       │       ├── Accepted / Rejected / Needs Clarification
+    │       │       │       │       └── Rationale           ◆ REQUIRED on reject (checklist §3)
+    │       │       │       ├── Implementation
+    │       │       │       │       ├── Not Started / In Progress
+    │       │       │       │       └── Implemented in Rev X     ◆ explicit rev link
+    │       │       │       ├── Validation
+    │       │       │       │       ├── Owner = reviewer who raised the issue   ◆ supplier re-confirms
+    │       │       │       │       ├── Compares: created-on rev vs implemented-in rev
+    │       │       │       │       └── Pending / Validated / Validation Failed (→ reopens)
+    │       │       │       ├── Derived Issue State   ◆ Open → Dispositioned → Implemented
+    │       │       │       │                            → Validated → Closed
+    │       │       │       ├── Comments / Attachments
+    │       │       │       └── Audit Trail
+    │       │       │
+    │       │       └── DFM State         ◆ Invited → In Review → Feedback Submitted
+    │       │                               → Awaiting Validation → Complete
+    │       │
+    │       │   ────────────────────────────────
+    │       │   ISSUE GROUPS   ◆ NEW · brand-side only · cross-DFM rollup
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Issue Groups
+    │       │   └── Group                 ("Wall thickness — boss area" · 3 providers flagged)
+    │       │       ├── Linked Issues     (one per provider DFM)
+    │       │       ├── Conflict Flag     ◆ providers gave contradictory recommendations
+    │       │       ├── Unified Decision  ◆ disposition once → cascades to linked issues
+    │       │       └── Confidentiality preserved: providers see only their own issue
+    │       │
+    │       │   ────────────────────────────────
+    │       │   SIGN-OFFS      ◆ NEW · joint alignments are first-class, not issues
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Sign-offs
+    │       │   └── Sign-off              (Gate location · Brand + Hsinchu Precision)
+    │       │       ├── Topic             (Parting Line / Gate Location / Material Lock /
+    │       │       │                      Tooling Ownership / custom)
+    │       │       ├── Parties           (brand owner + provider, both must confirm)
+    │       │       ├── State             Proposed → Aligned → Signed
+    │       │       ├── Record            (what was agreed, written rationale)
+    │       │       └── Audit Trail
+    │       │
+    │       │   ────────────────────────────────
+    │       │   DFM APPROVAL   ◆ NEW · the gate that matters (checklist §6 — cut steel)
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── DFM Approval
+    │       │       ├── Entry Criteria        ALL open issues dispositioned + sign-offs signed
+    │       │       ├── Approved By / Timestamp
+    │       │       ├── Approved Revision     (frozen — the rev steel gets cut against)
+    │       │       └── PO / Tooling Reference (optional external ref)
+    │       │
+    │       │   ────────────────────────────────
+    │       │   PART STATE     ◆ ends at approval, not "complete"
+    │       │   ────────────────────────────────
+    │       │
+    │       ├── Part State
+    │       │       ├── Draft
+    │       │       ├── Package Complete      ◆ new gate state
+    │       │       ├── DFM Active
+    │       │       ├── Awaiting Validation
+    │       │       └── DFM Approved          ◆ replaces "DFM Complete" — cleared to cut steel
+    │       │
+    │       │   ────────────────────────────────
+    │       │   ACTIVITY
+    │       │   ────────────────────────────────
+    │       │
+    │       └── Activity
+    │               ├── Revision Uploaded / Issue Created / Issue Updated
+    │               ├── Decision Recorded / Validation Requested / Issue Closed
+    │               ├── Sign-off Recorded     ◆
+    │               └── DFM Approved          ◆
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   EXTERNAL REVIEWERS
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├── External Reviewers
+    │       ├── Company
+    │       ├── Role                          (CM, Supplier, Fabricator, Tooling, etc.)
+    │       ├── NDA Status                    ◆ gate before any files are visible
+    │       ├── Access Scope                  (which parts → which DFMs · nothing else)
+    │       ├── Magic Link
+    │       │       ├── Expiry / Revoke           ◆
+    │       │       └── File Watermarking Policy  ◆ CAD/drawings stamped per recipient
+    │       └── Reviewer Activity Log         ◆ who viewed/downloaded what, when
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   PROJECT ACTIVITY FEED
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├── Project Activity Feed
+    │       ├── Reviewer Invited / Part Added / Revision Uploaded
+    │       ├── Issue Opened / Decision Recorded / Validation Requested / Issue Closed
+    │       ├── Sign-off Recorded             ◆
+    │       └── DFM Approved                  ◆
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   PROJECT STATE
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├── Project State
+    │       ├── Setup
+    │       ├── DFM Active
+    │       └── DFM Approved                  ◆
+    │
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │   vNEXT HOOKS    ◆ out of scope, modeled as stubs
+    │   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    └── vNext Hooks
+            ├── Tooling Quote                 (checklist §4 — attaches to DFM Approval)
+            ├── Mold Flow / Simulation        (checklist §5 — attaches to Revision)
+            └── T1 / FAI / PPAP               (checklist §7 — attaches to Approved Revision)
+```
+
+</details>
+
 ---
 
 ## Screens
