@@ -1,2 +1,8 @@
 .DS_Store
 strategy/
+
+# Screenshot tooling artifacts (not part of the prototype)
+node_modules/
+package.json
+package-lock.json
+chorus-screenshots.zip
