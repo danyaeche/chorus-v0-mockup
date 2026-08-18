@@ -1,0 +1,20 @@
+{
+  "//": "Standalone check for the port modules. The app's own tsconfig takes over once these land in it; this exists so the port can be typechecked on its own, before it has a home. Convex files are excluded because they need the app's generated _generated/ types.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node"]
+  },
+  "include": ["types/**/*.d.ts", "lib/**/*.ts", "components/**/*.tsx"],
+  "exclude": ["convex/**/*", "hooks/**/*"]
+}
