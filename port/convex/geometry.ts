@@ -1,8 +1,17 @@
 // Convex functions for the geometry layer — lands as `graph.geometry.*`.
 //
-// ASSUMPTIONS (see port/README.md): the part-version table is `partVersions`;
-// auth identity comes from `ctx.auth.getUserIdentity()` as it does elsewhere in
-// this app via Clerk. Swap in your own auth helper where marked.
+// STORAGE MODEL (confirmed from the shipped bundle, not assumed):
+// files live in R2 and are addressed by an opaque `r2Key` string. Part versions
+// already carry `fileRefs[].r2Key`, and the client resolves a URL through the
+// existing `kernel.files.generateDownloadUrl({ r2Key }) -> { url }` action.
+// These functions therefore only ever store and return r2Keys — they never call
+// `ctx.storage`, and URL resolution stays with the helper that already owns it.
+//
+// ASSUMPTIONS still to confirm against the real repo:
+//   - the part-version table is named `partVersions`
+//   - `kernel.files.generateUploadUrl` returns something the client can PUT to
+//     and yields an r2Key (its exact shape is not visible in the bundle)
+//   - auth identity comes from `ctx.auth.getUserIdentity()` as elsewhere
 
 import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
@@ -14,26 +23,18 @@ async function requireIdentity(ctx: { auth: { getUserIdentity: () => Promise<unk
   return identity
 }
 
-/** Upload URL for the raw CAD file. Mirrors `kernel.files.generateUploadUrl`. */
-export const generateCadUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
-    await requireIdentity(ctx)
-    return await ctx.storage.generateUploadUrl()
-  },
-})
-
 /**
- * Attach a CAD file to a part revision.
+ * Register an existing part-version file as this revision's CAD.
  *
- * The row starts `pending` — the client tessellates on first view and calls
- * `recordTessellation`. A mesh upload (STL/GLB) needs no OpenCascade pass, so it
- * is recorded `ready` immediately.
+ * The normal path is not an upload: a STEP already sits in `version.fileRefs`,
+ * and this marks which one is the geometry of record. Starts `pending`; the
+ * client tessellates on first view and calls `recordTessellation`. A mesh upload
+ * (STL/GLB) needs no OpenCascade pass and is recorded `ready` immediately.
  */
-export const attachCad = mutation({
+export const registerCad = mutation({
   args: {
     partVersionId: v.id('partVersions'),
-    storageId: v.id('_storage'),
+    r2Key: v.string(),
     filename: v.string(),
     format: v.union(
       v.literal('step'),
@@ -46,25 +47,19 @@ export const attachCad = mutation({
   handler: async (ctx, args) => {
     const identity = await requireIdentity(ctx)
 
-    const existing = await ctx.db
-      .query('partVersionGeometry')
-      .withIndex('by_partVersion', (q) => q.eq('partVersionId', args.partVersionId))
-      .unique()
+    const existing = await geometryFor(ctx, args.partVersionId)
 
-    // Replacing the CAD on a revision invalidates the derived mesh and every
-    // diff that referenced it. Drop the blobs rather than orphaning them.
+    // Pointing a revision at different CAD invalidates the derived mesh and
+    // every cached diff that referenced it.
     if (existing) {
-      if (existing.meshStorageId) await ctx.storage.delete(existing.meshStorageId)
-      if (existing.sourceStorageId !== args.storageId) {
-        await ctx.storage.delete(existing.sourceStorageId)
-      }
+      if (existing.sourceR2Key === args.r2Key) return existing._id
       await invalidateDiffsFor(ctx, args.partVersionId)
       await ctx.db.delete(existing._id)
     }
 
     return await ctx.db.insert('partVersionGeometry', {
       partVersionId: args.partVersionId,
-      sourceStorageId: args.storageId,
+      sourceR2Key: args.r2Key,
       sourceFilename: args.filename,
       sourceFormat: args.format,
       sourceBytes: args.bytes,
@@ -75,31 +70,28 @@ export const attachCad = mutation({
   },
 })
 
-/** Geometry for one revision, with signed URLs for whichever blobs exist. */
+/**
+ * Geometry for one revision. Returns r2Keys; the caller resolves them through
+ * `kernel.files.generateDownloadUrl`. Prefer `meshR2Key` — falling back to
+ * `sourceR2Key` means paying the ~7 MB OpenCascade download and a parse.
+ */
 export const getGeometry = query({
   args: { partVersionId: v.id('partVersions') },
   handler: async (ctx, args) => {
     await requireIdentity(ctx)
+    return await geometryFor(ctx, args.partVersionId)
+  },
+})
 
-    const geometry = await ctx.db
-      .query('partVersionGeometry')
-      .withIndex('by_partVersion', (q) => q.eq('partVersionId', args.partVersionId))
-      .unique()
-
-    if (!geometry) return null
-
-    return {
-      ...geometry,
-      // The client prefers meshUrl and only falls back to sourceUrl (and the
-      // 7 MB OpenCascade payload) when the mesh has not been built yet.
-      meshUrl: geometry.meshStorageId
-        ? await ctx.storage.getUrl(geometry.meshStorageId)
-        : null,
-      sourceUrl: await ctx.storage.getUrl(geometry.sourceStorageId),
-      thumbnailUrl: geometry.thumbnailStorageId
-        ? await ctx.storage.getUrl(geometry.thumbnailStorageId)
-        : null,
-    }
+/** Geometry rows for several revisions at once — for the revision rail. */
+export const getGeometryForVersions = query({
+  args: { partVersionIds: v.array(v.id('partVersions')) },
+  handler: async (ctx, args) => {
+    await requireIdentity(ctx)
+    const rows = await Promise.all(
+      args.partVersionIds.map((partVersionId) => geometryFor(ctx, partVersionId)),
+    )
+    return rows.filter((row): row is NonNullable<typeof row> => row !== null)
   },
 })
 
@@ -107,8 +99,8 @@ export const getGeometry = query({
 export const recordTessellation = mutation({
   args: {
     partVersionId: v.id('partVersions'),
-    meshStorageId: v.id('_storage'),
-    thumbnailStorageId: v.optional(v.id('_storage')),
+    meshR2Key: v.string(),
+    thumbnailR2Key: v.optional(v.string()),
     unit: v.string(),
     bbox: v.array(v.number()),
     triangleCount: v.number(),
@@ -117,24 +109,16 @@ export const recordTessellation = mutation({
   handler: async (ctx, args) => {
     await requireIdentity(ctx)
 
-    const geometry = await ctx.db
-      .query('partVersionGeometry')
-      .withIndex('by_partVersion', (q) => q.eq('partVersionId', args.partVersionId))
-      .unique()
+    const geometry = await geometryFor(ctx, args.partVersionId)
+    if (!geometry) throw new Error('No CAD registered on this revision')
 
-    if (!geometry) throw new Error('No CAD attached to this revision')
-
-    // Two clients can open the same revision at once and both tessellate. The
-    // first write wins; the loser's blob is deleted so it does not leak.
-    if (geometry.meshStorageId) {
-      await ctx.storage.delete(args.meshStorageId)
-      if (args.thumbnailStorageId) await ctx.storage.delete(args.thumbnailStorageId)
-      return geometry._id
-    }
+    // Two clients can open the same revision at once and both tessellate. First
+    // write wins; the loser's mesh is left for R2 lifecycle rules to reap.
+    if (geometry.meshR2Key) return geometry._id
 
     await ctx.db.patch(geometry._id, {
-      meshStorageId: args.meshStorageId,
-      thumbnailStorageId: args.thumbnailStorageId ?? geometry.thumbnailStorageId,
+      meshR2Key: args.meshR2Key,
+      thumbnailR2Key: args.thumbnailR2Key ?? geometry.thumbnailR2Key,
       unit: args.unit,
       bbox: args.bbox,
       triangleCount: args.triangleCount,
@@ -148,16 +132,10 @@ export const recordTessellation = mutation({
 })
 
 export const recordTessellationFailure = mutation({
-  args: {
-    partVersionId: v.id('partVersions'),
-    error: v.string(),
-  },
+  args: { partVersionId: v.id('partVersions'), error: v.string() },
   handler: async (ctx, args) => {
     await requireIdentity(ctx)
-    const geometry = await ctx.db
-      .query('partVersionGeometry')
-      .withIndex('by_partVersion', (q) => q.eq('partVersionId', args.partVersionId))
-      .unique()
+    const geometry = await geometryFor(ctx, args.partVersionId)
     if (!geometry) return
     await ctx.db.patch(geometry._id, {
       tessellationStatus: 'failed',
@@ -184,16 +162,16 @@ export const getCachedDiff = query({
 
     if (!cached) return null
 
-    // A cache row is only valid while both meshes it was computed from are still
-    // the current ones — re-uploading CAD on either side makes it a lie.
+    // Only valid while both meshes it was computed from are still current —
+    // re-registering CAD on either side makes it a lie.
     const [from, to] = await Promise.all([
       geometryFor(ctx, args.fromVersionId),
       geometryFor(ctx, args.toVersionId),
     ])
 
     if (
-      from?.meshStorageId !== cached.fromMeshStorageId ||
-      to?.meshStorageId !== cached.toMeshStorageId
+      from?.meshR2Key !== cached.fromMeshR2Key ||
+      to?.meshR2Key !== cached.toMeshR2Key
     ) {
       return null
     }
@@ -229,7 +207,7 @@ export const recordDiff = mutation({
       geometryFor(ctx, args.toVersionId),
     ])
 
-    if (!from?.meshStorageId || !to?.meshStorageId) {
+    if (!from?.meshR2Key || !to?.meshR2Key) {
       throw new Error('Both revisions must be tessellated before a diff can be cached')
     }
 
@@ -242,8 +220,8 @@ export const recordDiff = mutation({
 
     const row = {
       ...args,
-      fromMeshStorageId: from.meshStorageId,
-      toMeshStorageId: to.meshStorageId,
+      fromMeshR2Key: from.meshR2Key,
+      toMeshR2Key: to.meshR2Key,
       computedAt: Date.now(),
     }
 
@@ -270,8 +248,8 @@ async function invalidateDiffsFor(
   ctx: { db: { query: Ctx['db']['query']; delete: (id: Id<'geometryDiffCache'>) => Promise<void> } },
   partVersionId: Id<'partVersions'>,
 ) {
-  // A revision appears on both sides of different pairs, so both directions have
-  // to be swept.
+  // A revision appears on both sides of different pairs, so both directions
+  // have to be swept.
   const asFrom = await ctx.db
     .query('geometryDiffCache')
     .withIndex('by_from', (q) => q.eq('fromVersionId', partVersionId))

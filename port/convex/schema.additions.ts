@@ -35,7 +35,11 @@ export const geometryTables = {
   partVersionGeometry: defineTable({
     partVersionId: v.id('partVersions'),
 
-    sourceStorageId: v.id('_storage'),
+    // Files live in R2, keyed by `r2Key` — NOT Convex `_storage`. Confirmed from
+    // the shipped bundle: `kernel.files.generateDownloadUrl({ r2Key })` returns
+    // `{ url }`, and part versions already carry `fileRefs[].r2Key`. The source
+    // CAD here is normally an existing fileRef on the version, not a new upload.
+    sourceR2Key: v.string(),
     sourceFilename: v.string(),
     sourceFormat: v.union(
       v.literal('step'),
@@ -45,8 +49,8 @@ export const geometryTables = {
     ),
     sourceBytes: v.number(),
 
-    meshStorageId: v.optional(v.id('_storage')),
-    thumbnailStorageId: v.optional(v.id('_storage')),
+    meshR2Key: v.optional(v.string()),
+    thumbnailR2Key: v.optional(v.string()),
 
     /** Linear unit the mesh coordinates are in. */
     unit: v.optional(v.string()),
@@ -93,8 +97,8 @@ export const geometryTables = {
     clamped: v.boolean(),
 
     /** Invalidation key — if either mesh is replaced, the cache row is stale. */
-    fromMeshStorageId: v.id('_storage'),
-    toMeshStorageId: v.id('_storage'),
+    fromMeshR2Key: v.string(),
+    toMeshR2Key: v.string(),
 
     computedAt: v.number(),
   })
