@@ -6,3 +6,7 @@ node_modules/
 package.json
 package-lock.json
 chorus-screenshots.zip
+
+# ...but the CAD port's demo is real source and needs its manifest.
+!port/demo/package.json
+!port/demo/package-lock.json
