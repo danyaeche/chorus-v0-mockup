@@ -1,0 +1,158 @@
+/* Design tokens read off the deployed app's stylesheet
+ * (chorus-ruby.vercel.app /assets/index-CvMLpOt9.css).
+ *
+ * Present only so the demo renders in the real design language. When these
+ * components land in the app they inherit its tokens and this file is dropped.
+ */
+
+:root {
+  color-scheme: light;
+  --surface-0: 252 252 252;
+  --surface-1: 255 255 255;
+  --surface-2: 244 244 244;
+  --surface-3: 228 228 228;
+  --line: 235 235 235;
+  --line-strong: 218 218 218;
+  --ink: 20 20 20;
+  --ink-muted: 38 38 38;
+  --ink-subtle: 94 94 94;
+  --ink-faint: 138 138 138;
+  --accent: 20 20 20;
+  --accent-strong: 0 0 0;
+  --accent-bg: 244 244 244;
+  --accent-line: 218 218 218;
+  --accent-ink: 252 252 252;
+  --tone-ok: 15 123 58;
+  --tone-ok-bg: 238 246 241;
+  --tone-ok-line: 212 231 220;
+  --tone-warn: 181 137 0;
+  --tone-warn-bg: 250 247 237;
+  --tone-warn-line: 242 234 209;
+  --tone-info: 194 87 15;
+  --tone-info-bg: 251 243 238;
+  --tone-info-line: 244 225 212;
+  --tone-danger: 196 35 35;
+  --tone-danger-bg: 251 240 240;
+  --tone-danger-line: 244 215 215;
+  --tone-neutral: 94 94 94;
+  --tone-neutral-bg: 244 244 244;
+  --tone-neutral-line: 218 218 218;
+  --tone-muted: 138 138 138;
+  --tone-muted-bg: 249 249 249;
+  --tone-muted-line: 235 235 235;
+  --focus: 20 20 20;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --surface-0: 10 10 11;
+  --surface-1: 17 17 19;
+  --surface-2: 23 23 26;
+  --surface-3: 29 29 33;
+  --line: 38 38 43;
+  --line-strong: 53 53 61;
+  --ink: 237 237 240;
+  --ink-muted: 161 161 171;
+  --ink-subtle: 129 129 140;
+  --ink-faint: 106 106 116;
+  --accent: 237 237 240;
+  --accent-strong: 255 255 255;
+  --accent-bg: 29 29 33;
+  --accent-line: 53 53 61;
+  --accent-ink: 10 10 11;
+  --tone-ok: 52 211 153;
+  --tone-ok-bg: 6 46 34;
+  --tone-ok-line: 11 82 64;
+  --tone-warn: 251 191 36;
+  --tone-warn-bg: 42 31 12;
+  --tone-warn-line: 77 56 19;
+  --tone-info: 251 146 60;
+  --tone-info-bg: 43 26 13;
+  --tone-info-line: 77 47 19;
+  --tone-danger: 248 113 113;
+  --tone-danger-bg: 42 18 21;
+  --tone-danger-line: 76 29 33;
+  --tone-neutral: 161 161 171;
+  --tone-neutral-bg: 29 29 33;
+  --tone-neutral-line: 53 53 61;
+  --tone-muted: 113 113 124;
+  --tone-muted-bg: 20 20 23;
+  --tone-muted-line: 38 38 43;
+  --focus: 237 237 240;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  background: rgb(var(--surface-0));
+  color: rgb(var(--ink));
+  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0 0 0.25rem;
+}
+
+.demo-shell {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.demo-sub {
+  color: rgb(var(--ink-subtle));
+  margin: 0 0 1.5rem;
+}
+
+.demo-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: 0.5rem;
+  background: rgb(var(--surface-1));
+}
+
+.demo-btn {
+  padding: 0.375rem 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(var(--line-strong));
+  background: rgb(var(--surface-1));
+  color: rgb(var(--ink));
+  cursor: pointer;
+}
+
+.demo-btn:hover {
+  background: rgb(var(--surface-2));
+}
+
+.demo-btn[data-primary='true'] {
+  background: rgb(var(--accent));
+  color: rgb(var(--accent-ink));
+  border-color: rgb(var(--accent));
+}
+
+.demo-spacer {
+  margin-left: auto;
+}
+
+.demo-section {
+  margin-bottom: 2.5rem;
+}
+
+.demo-h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 0.75rem;
+}
