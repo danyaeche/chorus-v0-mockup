@@ -359,7 +359,7 @@ The complete screen set, in user-flow order — rendered full-page at 1440×900.
 - **Pure CSS/SVG charts** — donut, bars, progress (no chart library).
 - **`model.js`** — the canonical worked-example data model: a workspace **part library** + projects + **(part × project) memberships**, each membership carrying its own DFM process. Part-detail, parts-list, and project-detail render from it, which is what makes the shared-part / per-project-DFM behaviour consistent across screens.
 - **`localStorage`** store (`store.js`) so created projects/parts/links persist as you navigate; **`cadstore.js`** (IndexedDB) hands off uploaded CAD to the viewer.
-- Shared **`sidebar.js`** (nav + workspace switcher) and **`switcher.js`** (a dev-only screen jumper; append `#noswitch` to any URL to hide it).
+- Shared **`sidebar.js`** navigation and **`switcher.js`** (a dev-only screen jumper; append `#noswitch` to any URL to hide it).
 - The sign-in / sign-up heroes are **Three.js line-globes** (`auth-logo.js`, `auth-globe-signup.js`); the sign-in globe re-permutes its lines on every refresh.
 - Hosted on **GitHub Pages** at the apex domain `withchorus.ai`.
 
